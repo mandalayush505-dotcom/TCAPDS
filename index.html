@@ -23,7 +23,7 @@
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
             <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.2 // System Restoration</p>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.3 // Sector Correction</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
@@ -40,7 +40,7 @@
                 <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
             </div>
             <div class="text-right">
-                <p class="text-[8px] mono-font text-red-700 font-bold uppercase">HWH-NDLS RAJ: ONLINE</p>
+                <p class="text-[8px] mono-font text-red-700 font-bold uppercase">HWH-NDLS HO RJ: ACTIVE</p>
             </div>
         </header>
 
@@ -49,17 +49,17 @@
             <section id="tab-home" class="tab-content space-y-4">
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div class="stat-card">
-                        <p class="text-[7px] mono-font text-slate-500 uppercase">Signal Strength</p>
-                        <p class="tech-font text-xs text-green-500">98.4%</p>
+                        <p class="text-[7px] mono-font text-slate-500 uppercase">Zone Logic</p>
+                        <p class="tech-font text-xs text-blue-500">ER // NCR</p>
                     </div>
                     <div class="stat-card">
-                        <p class="text-[7px] mono-font text-slate-500 uppercase">Core Temp</p>
-                        <p class="tech-font text-xs text-red-500">42°C</p>
+                        <p class="text-[7px] mono-font text-slate-500 uppercase">Core Status</p>
+                        <p class="tech-font text-xs text-yellow-500 italic">BLUEPRINT ONLY</p>
                     </div>
                 </div>
                 
                 <div class="bg-black/40 p-5 rounded-xl border border-slate-900">
-                    <h4 class="tech-font text-[8px] text-slate-600 mb-6 uppercase text-center">Grand Chord Mainline Tracking</h4>
+                    <h4 class="tech-font text-[8px] text-slate-600 mb-6 uppercase text-center">Grand Chord Corridor (HO RJ)</h4>
                     <div class="relative px-2">
                         <div class="ohe-line w-full absolute -top-4 left-0 opacity-30"></div>
                         <div class="flex justify-between items-center text-[7px] mono-font">
@@ -75,7 +75,7 @@
 
                 <div class="stat-card bg-red-950/10 border-red-900/20">
                     <p class="text-[8px] mono-font text-red-800 mb-1 font-bold uppercase">System Info</p>
-                    <p class="text-[9px] mono-font text-slate-400">Terminal active on SER/SCR zones. LHB coach monitoring enabled. 1:39 scale calibration in progress.</p>
+                    <p class="text-[9px] mono-font text-slate-400">Restored ER/NCR tracking. Rocket Mach 1.9 propulsion design phase initiated. Sarthak profile re-synced.</p>
                 </div>
             </section>
 
@@ -84,27 +84,28 @@
                 <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Crew Registry</h3>
                 <div class="bg-slate-900/30 p-3 border-l-2 border-red-700 rounded-r-lg"><p class="tech-font text-[9px] text-red-600 uppercase">Ayush</p><p class="mono-font text-[8px] text-slate-500 uppercase">Lead Engineer</p></div>
                 <div class="bg-slate-900/30 p-3 border-l-2 border-slate-700 rounded-r-lg"><p class="tech-font text-[9px] text-slate-300 uppercase">Debpratim</p><p class="mono-font text-[8px] text-slate-500 uppercase">The Thinker</p></div>
+                <div class="bg-slate-900/30 p-3 border-l-2 border-slate-800 rounded-r-lg"><p class="tech-font text-[9px] text-slate-400 uppercase">Sarthak</p><p class="mono-font text-[8px] text-slate-500 uppercase">Logistics Specialist</p></div>
             </section>
 
-            <!-- PROJECTS TAB (RESTORED) -->
+            <!-- PROJECTS TAB -->
             <section id="tab-projects" class="tab-content hidden space-y-4">
-                <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Research & Development</h3>
+                <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Active Blueprints</h3>
                 <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
-                    <p class="tech-font text-[10px] text-red-600 uppercase">Mach 1.9 Concept</p>
-                    <p class="mono-font text-[8px] text-slate-500">Supersonic rail-logic transition protocols. Exploring frictionless physics at high-speed overtakes.</p>
+                    <p class="tech-font text-[10px] text-red-600 uppercase">Rocket Mach 1.9</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Concept: Rocket Propulsion // High-Velocity Aero</p>
                 </div>
                 <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
                     <p class="tech-font text-[10px] text-slate-300 uppercase">Home Security Complete</p>
-                    <p class="mono-font text-[8px] text-slate-500">Full grid lockdown & terminal encryption suite. Automated WAP-7i alert system.</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Network Encryption & Terminal Locking</p>
                 </div>
             </section>
 
             <!-- COMPLETED TAB -->
             <section id="tab-completed" class="tab-content hidden space-y-3">
-                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Build Archive</h3>
+                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Inventory</h3>
                 <div class="bg-slate-900/30 p-4 border border-green-900/30 rounded-lg">
                     <p class="tech-font text-[9px] text-green-600 uppercase">AC First Class (H1)</p>
-                    <p class="mono-font text-[8px] text-slate-500 uppercase">Coach: 261104/S // Completed 2026-04</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Model: 261104/S // Scale 1:39</p>
                 </div>
             </section>
 
@@ -121,9 +122,9 @@
         <!-- NAVIGATION -->
         <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 px-2 flex justify-around items-center z-50">
             <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house-signal text-lg"></i></button>
-            <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-users-gear text-lg"></i></button>
-            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-microchip text-lg"></i></button>
-            <button onclick="showTab('completed', this)" class="nav-item text-slate-700"><i class="fa-solid fa-box-open text-lg"></i></button>
+            <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-gear text-lg"></i></button>
+            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-rocket text-lg"></i></button>
+            <button onclick="showTab('completed', this)" class="nav-item text-slate-700"><i class="fa-solid fa-folder-closed text-lg"></i></button>
             <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal text-lg"></i></button>
         </nav>
     </div>
@@ -131,7 +132,7 @@
     <script>
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
-        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v22')) || [];
+        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v23')) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
@@ -142,7 +143,7 @@
                 document.getElementById('main-content').classList.remove('hidden');
                 document.getElementById('welcome-msg').innerText = `Unit: ${currentUser}`;
                 renderChat();
-            } else { alert("ACCESS DENIED"); }
+            } else { alert("SYSTEM LOCKED: INCORRECT ID"); }
         }
 
         function showTab(id, btn) {
@@ -159,7 +160,7 @@
             if(!inp.value.trim()) return;
             const log = { user: currentUser, msg: inp.value.toUpperCase(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
             chatLogs.push(log);
-            localStorage.setItem('taiwrc_v22', JSON.stringify(chatLogs));
+            localStorage.setItem('taiwrc_v23', JSON.stringify(chatLogs));
             inp.value = "";
             renderChat();
         }
