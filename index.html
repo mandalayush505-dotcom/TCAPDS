@@ -15,9 +15,7 @@
         .ohe-line { height: 1px; background: repeating-linear-gradient(90deg, #334155 0, #334155 10px, transparent 10px, transparent 20px); }
         .nav-active { color: #b91c1c !important; filter: drop-shadow(0 0 10px rgba(185, 28, 28, 0.8)); }
         .stat-card { background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(51, 65, 85, 0.5); padding: 10px; border-radius: 8px; }
-        /* Chat Scrollbar */
         #chat-box::-webkit-scrollbar { width: 4px; }
-        #chat-box::-webkit-scrollbar-track { background: transparent; }
         #chat-box::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 10px; }
     </style>
 </head>
@@ -27,7 +25,7 @@
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
             <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.6 // HISTORY_INIT</p>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.8 // FULL_SYSTEM_RECOVERY</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
@@ -44,7 +42,7 @@
                 <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
             </div>
             <div class="text-right">
-                <p class="text-[8px] mono-font text-slate-500 font-bold uppercase">LOGS: PERSISTENT</p>
+                <p class="text-[8px] mono-font text-slate-500 font-bold uppercase">STATUS: RESTORED_V2</p>
             </div>
         </header>
 
@@ -52,56 +50,88 @@
             <!-- HOME TAB -->
             <section id="tab-home" class="tab-content space-y-4">
                 <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="stat-card"><p class="text-[7px] mono-font text-slate-500 uppercase">Zone</p><p class="tech-font text-xs text-blue-500">ER // NCR</p></div>
-                    <div class="stat-card"><p class="text-[7px] mono-font text-slate-500 uppercase">Architecture</p><p class="tech-font text-xs text-yellow-500">BLUEPRINT</p></div>
+                    <div class="stat-card">
+                        <p class="text-[7px] mono-font text-slate-500 uppercase">Sector Tracking</p>
+                        <p class="tech-font text-xs text-blue-500">ER // NCR</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-[7px] mono-font text-slate-500 uppercase">Core Architecture</p>
+                        <p class="tech-font text-xs text-yellow-500 italic">BLUEPRINT ONLY</p>
+                    </div>
                 </div>
+
                 <div class="stat-card bg-red-950/10 border-red-900/20 p-6">
-                    <p class="text-[10px] mono-font text-red-800 mb-2 font-bold uppercase text-center">System Info</p>
-                    <p class="text-[9px] mono-font text-slate-400 text-center leading-relaxed">Terminal active. History buffer engaged. ER/NCR zone synchronization complete. Secure status: Armed.</p>
+                    <p class="text-[10px] mono-font text-red-800 mb-2 font-bold uppercase text-center">Operational Info</p>
+                    <p class="text-[9px] mono-font text-slate-400 text-center leading-relaxed">
+                        Terminal synchronized with South Eastern and North Central zone logic. 
+                        1:39 scale papercrafting metrics active for LHB and locomotive modeling. 
+                        WAP-7i intelligent variant modeling currently in blueprint phase.
+                    </p>
                 </div>
             </section>
 
             <!-- CREW TAB -->
             <section id="tab-about" class="tab-content hidden space-y-3">
                 <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Crew Registry</h3>
-                <div class="bg-slate-900/30 p-3 border-l-2 border-red-700 rounded-r-lg"><p class="tech-font text-[9px] text-red-600 uppercase">Ayush</p></div>
-                <div class="bg-slate-900/30 p-3 border-l-2 border-slate-700 rounded-r-lg"><p class="tech-font text-[9px] text-slate-300 uppercase">Debpratim</p></div>
-                <div class="bg-slate-900/30 p-3 border-l-2 border-slate-800 rounded-r-lg"><p class="tech-font text-[9px] text-slate-400 uppercase">Sarthak</p></div>
+                <div class="bg-slate-900/30 p-3 border-l-2 border-red-700 rounded-r-lg">
+                    <p class="tech-font text-[9px] text-red-600 uppercase">Ayush</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Lead Engineer</p>
+                </div>
+                <div class="bg-slate-900/30 p-3 border-l-2 border-slate-700 rounded-r-lg">
+                    <p class="tech-font text-[9px] text-slate-300 uppercase">Debpratim</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">The Thinker</p>
+                </div>
+                <div class="bg-slate-900/30 p-3 border-l-2 border-slate-800 rounded-r-lg">
+                    <p class="tech-font text-[9px] text-slate-400 uppercase">Sarthak</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Logistics Specialist</p>
+                </div>
             </section>
 
             <!-- PROJECTS TAB -->
             <section id="tab-projects" class="tab-content hidden space-y-4">
-                <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Projects</h3>
+                <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Project Manifest</h3>
                 <div class="bg-black/40 p-5 rounded-xl border border-slate-800 mb-4">
-                    <h4 class="tech-font text-[8px] text-slate-600 mb-4 uppercase text-center">HWH-NDLS HO RAJ</h4>
+                    <h4 class="tech-font text-[8px] text-slate-600 mb-4 uppercase text-center">HWH-NDLS HO RAJ (Tracking)</h4>
                     <div class="relative px-2">
                         <div class="ohe-line w-full absolute -top-4 left-0 opacity-30"></div>
                         <div class="flex justify-between items-center text-[7px] mono-font">
-                            <span>HWH</span><span>DHN</span><span>GAYA</span><span>DDU</span><span>CNB</span><span>NDLS</span>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="h-2 w-2 bg-red-600 rounded-full shadow-[0_0_8px_red]"></div>
+                                <span>HWH</span>
+                            </div>
+                            <span class="text-slate-700">DHN</span>
+                            <span class="text-slate-700">GAYA</span>
+                            <span class="text-slate-700">DDU</span>
+                            <span class="text-slate-700">CNB</span>
+                            <div class="flex flex-col items-center gap-1">
+                                <div class="h-2 w-2 bg-slate-800 rounded-full"></div>
+                                <span>NDLS</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
                     <p class="tech-font text-[10px] text-red-600 uppercase">Idea: Rocket Mach 1.9</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Conceptual Rocket Propulsion // Non-Active Design Phase</p>
                 </div>
             </section>
 
             <!-- COMPLETED TAB -->
             <section id="tab-completed" class="tab-content hidden space-y-3">
-                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Archive</h3>
+                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Hardware Archive</h3>
                 <div class="bg-slate-900/30 p-4 border border-green-900/30 rounded-lg">
                     <p class="tech-font text-[9px] text-green-600 uppercase">Home Security System</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Status: COMPLETE // Network Armed</p>
                 </div>
                 <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
-                    <p class="tech-font text-[9px] text-slate-400 uppercase">AC First Class (H1) - 1:39 Scale</p>
+                    <p class="tech-font text-[9px] text-slate-400 uppercase">AC First Class (H1)</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Model No: 261104/S // Scale 1:39</p>
                 </div>
             </section>
 
             <!-- CHAT TAB -->
             <section id="tab-chat" class="tab-content hidden flex flex-col h-[65vh]">
-                <div id="chat-box" class="flex-1 overflow-y-auto p-2 flex flex-col space-y-3">
-                    <!-- History loads here -->
-                </div>
+                <div id="chat-box" class="flex-1 overflow-y-auto p-2 flex flex-col space-y-3"></div>
                 <div class="flex gap-2 p-2 mt-auto">
                     <input id="chat-input" type="text" placeholder="TRANSMIT..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-2 text-red-600 mono-font text-[10px] outline-none">
                     <button onclick="sendMessage()" class="bg-red-900 px-4 rounded-lg text-white"><i class="fa-solid fa-paper-plane"></i></button>
@@ -113,7 +143,7 @@
         <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 px-2 flex justify-around items-center z-50">
             <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house"></i></button>
             <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-shield"></i></button>
-            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-flask"></i></button>
+            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-rocket"></i></button>
             <button onclick="showTab('completed', this)" class="nav-item text-slate-700"><i class="fa-solid fa-check-double"></i></button>
             <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal"></i></button>
         </nav>
@@ -122,8 +152,6 @@
     <script>
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
-        
-        // Initialize history from localStorage immediately
         let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v26_history')) || [];
 
         function login() {
@@ -133,7 +161,7 @@
                 currentUser = u.split('-')[0].replace('wap7','').replace('wag9','').toUpperCase();
                 document.getElementById('login-box').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('welcome-msg').innerText = `UNIT_ID: ${currentUser}`;
+                document.getElementById('welcome-msg').innerText = `ID: ${currentUser}`;
                 renderChat();
             } else { alert("ACCESS DENIED"); }
         }
@@ -151,13 +179,7 @@
             const inp = document.getElementById('chat-input');
             const val = inp.value.trim();
             if(!val) return;
-
-            const msgData = {
-                user: currentUser,
-                text: val.toUpperCase(),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-
+            const msgData = { user: currentUser, text: val.toUpperCase(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
             chatLogs.push(msgData);
             localStorage.setItem('taiwrc_v26_history', JSON.stringify(chatLogs));
             inp.value = "";
@@ -182,5 +204,5 @@
         document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
-                                                                                                                                                                                  </html>
+    </html>
     
