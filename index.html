@@ -23,7 +23,7 @@
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
             <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.4 // FINAL GRID</p>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v2.5 // SECURE STATUS</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
@@ -40,7 +40,7 @@
                 <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
             </div>
             <div class="text-right">
-                <p class="text-[8px] mono-font text-slate-500 font-bold uppercase">SYSTEM: STABLE</p>
+                <p class="text-[8px] mono-font text-slate-500 font-bold uppercase">SECURITY: ARMED</p>
             </div>
         </header>
 
@@ -96,17 +96,17 @@
                     <p class="tech-font text-[10px] text-red-600 uppercase">Idea: Rocket Mach 1.9</p>
                     <p class="mono-font text-[8px] text-slate-500 uppercase">Conceptual Rocket Propulsion // Non-Active</p>
                 </div>
-                <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
-                    <p class="tech-font text-[10px] text-slate-300 uppercase">Home Security Complete</p>
-                    <p class="mono-font text-[8px] text-slate-500 uppercase">Idea Status: Network Encryption Suite</p>
-                </div>
             </section>
 
             <!-- COMPLETED TAB -->
             <section id="tab-completed" class="tab-content hidden space-y-3">
-                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Hardware Inventory</h3>
+                <h3 class="tech-font text-[10px] text-green-800 uppercase px-2">Archive</h3>
                 <div class="bg-slate-900/30 p-4 border border-green-900/30 rounded-lg">
-                    <p class="tech-font text-[9px] text-green-600 uppercase">AC First Class (H1)</p>
+                    <p class="tech-font text-[9px] text-green-600 uppercase">Home Security System</p>
+                    <p class="mono-font text-[8px] text-slate-500 uppercase">Status: COMPLETE // Network Armed</p>
+                </div>
+                <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
+                    <p class="tech-font text-[9px] text-slate-400 uppercase">AC First Class (H1)</p>
                     <p class="mono-font text-[8px] text-slate-500 uppercase">Model No: 261104/S // Scale 1:39</p>
                 </div>
             </section>
@@ -121,7 +121,7 @@
             </section>
         </main>
 
-        <!-- NAVIGATION (Home Button Added & Icons Fixed) -->
+        <!-- NAVIGATION -->
         <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 px-2 flex justify-around items-center z-50">
             <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house text-lg"></i></button>
             <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-gear text-lg"></i></button>
@@ -134,7 +134,7 @@
     <script>
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
-        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v24')) || [];
+        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v25')) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
@@ -162,7 +162,7 @@
             if(!inp.value.trim()) return;
             const log = { user: currentUser, msg: inp.value.toUpperCase(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
             chatLogs.push(log);
-            localStorage.setItem('taiwrc_v24', JSON.stringify(chatLogs));
+            localStorage.setItem('taiwrc_v25', JSON.stringify(chatLogs));
             inp.value = "";
             renderChat();
         }
@@ -171,7 +171,7 @@
             const box = document.getElementById('chat-box');
             box.innerHTML = chatLogs.map(l => {
                 const isMe = l.user === currentUser;
-                return `<div class="bubble ${isMe ? 'bubble-right' : 'bubble-left'}" style="max-width: 85%; padding: 8px; border-radius: 10px; margin-bottom: 5px; font-size: 9px; background: ${isMe ? '#7f1d1d' : '#1e293b'}; color: ${isMe ? 'white' : '#94a3b8'}; align-self: ${isMe ? 'flex-end' : 'flex-start'};">
+                return `<div class="bubble" style="max-width: 85%; padding: 8px; border-radius: 10px; margin-bottom: 5px; font-size: 9px; background: ${isMe ? '#7f1d1d' : '#1e293b'}; color: ${isMe ? 'white' : '#94a3b8'}; align-self: ${isMe ? 'flex-end' : 'flex-start'}; margin-left: ${isMe ? 'auto' : '0'};">
                     <span style="font-size: 6px; font-weight: bold; display: block; opacity: 0.6;">${l.user}</span>
                     ${l.msg}</div>`;
             }).join('');
