@@ -27,7 +27,7 @@
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
             <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">Command Interface v1.7</p>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">Command Interface v1.8</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
@@ -50,7 +50,7 @@
         </header>
 
         <main class="flex-1 p-4 overflow-y-auto pb-28">
-            <!-- HOME TAB (ACTIVE BY DEFAULT) -->
+            <!-- HOME TAB -->
             <section id="tab-home" class="tab-content space-y-6">
                 <div class="bg-slate-900/20 border border-slate-800 p-4 rounded-lg">
                     <h3 class="tech-font text-[8px] text-slate-500 mb-2 uppercase">Status_Report</h3>
@@ -63,26 +63,17 @@
                         <div class="ohe-line w-full absolute -top-4 left-0 opacity-30"></div>
                         <div class="flex justify-between items-center text-[8px] mono-font">
                             <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-red-600 rounded-full shadow-[0_0_8px_red]"></div><span>HWH</span></div>
-                            <span class="text-slate-700">ASN</span>
-                            <span class="text-slate-700">DHN</span>
-                            <span class="text-slate-700">GAYA</span>
-                            <span class="text-slate-700">CNB</span>
-                            <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-slate-800 rounded-full"></div><span>NDLS</span></div>
+                            <span class="text-slate-700">MCA</span>
+                            <span class="text-slate-700">KGP</span>
+                            <span class="text-slate-700">TATA</span>
+                            <span class="text-slate-700">CKP</span>
+                            <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-slate-800 rounded-full"></div><span>ROU</span></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- CHAT TAB WITH BUBBLES -->
-            <section id="tab-chat" class="tab-content hidden h-[70vh] flex flex-col">
-                <div id="chat-box" class="flex-1 overflow-y-auto flex flex-col p-2 space-y-4"></div>
-                <div class="flex gap-2 p-4 glass rounded-xl border border-slate-800 mt-2">
-                    <input id="chat-input" type="text" placeholder="ENTER COMMAND..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-3 outline-none focus:border-red-900 text-red-600 uppercase mono-font text-[9px]">
-                    <button onclick="sendMessage()" class="bg-red-900 text-white px-6 rounded-lg active:bg-red-700 transition-all"><i class="fa-solid fa-bolt"></i></button>
-                </div>
-            </section>
-
-            <!-- ABOUT TAB -->
+            <!-- ABOUT TAB (RE-FIXED CREW) -->
             <section id="tab-about" class="tab-content hidden space-y-4">
                 <h3 class="tech-font text-xs text-red-800 uppercase tracking-widest px-2">Crew Registry</h3>
                 <div class="bg-slate-900/30 p-4 border-l-2 border-red-700 rounded-r-lg">
@@ -93,9 +84,23 @@
                     <p class="tech-font text-[10px] text-slate-300 uppercase">Debpratim</p>
                     <p class="mono-font text-[9px] text-slate-500 uppercase">The Thinker // Strategic Ops</p>
                 </div>
+                <div class="bg-slate-900/30 p-4 border-l-2 border-slate-800 rounded-r-lg">
+                    <p class="tech-font text-[10px] text-slate-400 uppercase">Sarthak</p>
+                    <p class="mono-font text-[9px] text-slate-500 uppercase">WAG-9 Expert // Freight Logistics</p>
+                </div>
+            </section>
+
+            <!-- CHAT TAB -->
+            <section id="tab-chat" class="tab-content hidden h-[70vh] flex flex-col">
+                <div id="chat-box" class="flex-1 overflow-y-auto flex flex-col p-2 space-y-4"></div>
+                <div class="flex gap-2 p-4 glass rounded-xl border border-slate-800 mt-2">
+                    <input id="chat-input" type="text" placeholder="ENTER COMMAND..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-3 outline-none focus:border-red-900 text-red-600 uppercase mono-font text-[9px]">
+                    <button onclick="sendMessage()" class="bg-red-900 text-white px-6 rounded-lg active:bg-red-700 transition-all"><i class="fa-solid fa-bolt"></i></button>
+                </div>
             </section>
         </main>
 
+        <!-- FOOTER NAV WITH ALL BUTTONS -->
         <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-6 px-8 flex justify-between items-center z-50">
             <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house-signal text-xl"></i></button>
             <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-shield text-xl"></i></button>
@@ -104,14 +109,9 @@
     </div>
 
     <script>
-        const database = { 
-            "Debpratim-debukakawap5": "debu-wap5brc", 
-            "ayushwap7": "wap7clw", 
-            "sarthababawag9": "wag9clw" 
-        };
-        
+        const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
-        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v17')) || [];
+        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v18')) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
@@ -128,8 +128,7 @@
         function showTab(id, btn) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById(`tab-${id}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active', 'text-slate-700'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.add('text-slate-700'));
+            document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('nav-active'); n.classList.add('text-slate-700'); });
             btn.classList.add('nav-active');
             btn.classList.remove('text-slate-700');
             if(id === 'chat') renderChat();
@@ -140,7 +139,7 @@
             if(!inp.value.trim()) return;
             const log = { user: currentUser, msg: inp.value.toUpperCase(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
             chatLogs.push(log);
-            localStorage.setItem('taiwrc_v17', JSON.stringify(chatLogs));
+            localStorage.setItem('taiwrc_v18', JSON.stringify(chatLogs));
             inp.value = "";
             renderChat();
         }
@@ -149,12 +148,9 @@
             const box = document.getElementById('chat-box');
             box.innerHTML = chatLogs.map(l => {
                 const isMe = l.user === currentUser;
-                return `
-                    <div class="bubble ${isMe ? 'bubble-right' : 'bubble-left'}">
-                        <span class="font-bold text-[7px] block mb-1 ${isMe ? 'text-red-200' : 'text-blue-400'}">${l.user}</span>
-                        ${l.msg}
-                        <span class="time-stamp">${l.time}</span>
-                    </div>`;
+                return `<div class="bubble ${isMe ? 'bubble-right' : 'bubble-left'}">
+                    <span class="font-bold text-[7px] block mb-1 ${isMe ? 'text-red-200' : 'text-blue-400'}">${l.user}</span>
+                    ${l.msg}<span class="time-stamp">${l.time}</span></div>`;
             }).join('');
             box.scrollTop = box.scrollHeight;
         }
