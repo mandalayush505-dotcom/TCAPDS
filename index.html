@@ -14,113 +14,77 @@
         .glass { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .ohe-line { height: 1px; background: repeating-linear-gradient(90deg, #334155 0, #334155 10px, transparent 10px, transparent 20px); }
         .nav-active { color: #b91c1c !important; filter: drop-shadow(0 0 10px rgba(185, 28, 28, 0.8)); }
-        .stat-card { background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(51, 65, 85, 0.5); padding: 10px; border-radius: 8px; }
         #chat-box::-webkit-scrollbar { width: 4px; }
         #chat-box::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 10px; }
     </style>
 </head>
 <body class="selection:bg-red-900/50 overflow-hidden h-screen">
 
-    <!-- LOGIN BOX -->
+    <!-- LOGIN -->
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
-        <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
-            <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">v3.5 // TRACKER_RESTORED</p>
+        <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900">
+            <h1 class="text-4xl font-bold tech-font text-red-700 mb-8">TAIWRC</h1>
             <div class="space-y-4">
-                <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
-                <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
-                <button onclick="login()" class="w-full bg-red-900 hover:bg-red-800 py-4 rounded-lg tech-font font-bold text-xs tracking-widest transition-all">MOUNT_CORE</button>
+                <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500 uppercase">
+                <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500">
+                <button onclick="login()" class="w-full bg-red-900 py-4 rounded-lg tech-font font-bold text-xs">MOUNT_CORE</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN INTERFACE -->
+    <!-- INTERFACE -->
     <div id="main-content" class="hidden flex flex-col h-full">
         <header class="p-4 glass border-b border-slate-900 flex justify-between items-center">
-            <div>
-                <h2 class="tech-font text-md font-bold text-red-700 tracking-tighter">TAIWRC_CORE</h2>
-                <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
-            </div>
-            <button onclick="toggleShield()" class="text-[8px] bg-red-950/40 border border-red-900 px-2 py-1 rounded mono-font text-red-500 uppercase">Data Shield</button>
+            <h2 class="tech-font text-red-700 text-sm">TAIWRC_CORE v3.6</h2>
+            <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
         </header>
 
         <main class="flex-1 p-4 overflow-y-auto pb-24">
-            <!-- HOME TAB -->
+            <!-- HOME -->
             <section id="tab-home" class="tab-content space-y-4">
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="stat-card"><p class="text-[7px] mono-font text-slate-500 uppercase">Sector Tracking</p><p class="tech-font text-xs text-blue-500">SER // NCR // ER</p></div>
-                    <div class="stat-card"><p class="text-[7px] mono-font text-slate-500 uppercase">Tech Status</p><p class="tech-font text-xs text-green-500">ACTIVE</p></div>
-                </div>
-                <div class="stat-card bg-red-950/10 border-red-900/20 p-6">
-                    <p class="text-[10px] mono-font text-red-800 mb-2 font-bold uppercase text-center">Operational Directives</p>
-                    <p class="text-[9px] mono-font text-slate-400 text-center">SER/ER/NCR Zone Logic // Scale: TBD // Bernoulli Effect Analysis Active.</p>
+                <div class="p-4 bg-slate-900/30 border border-slate-800 rounded-lg">
+                    <p class="text-[8px] mono-font text-slate-500 uppercase mb-2">Directives</p>
+                    <p class="text-[10px] mono-font text-slate-300 leading-relaxed">SER/ER/NCR Zone Logic Active. Scale: TBD. Bernoulli Analysis: Online.</p>
                 </div>
             </section>
 
-            <!-- PROJECTS TAB (RESTORED TRACKER) -->
-            <section id="tab-projects" class="tab-content hidden space-y-4">
-                <h3 class="tech-font text-[10px] text-red-800 uppercase px-2">Project Manifest</h3>
-                
-                <!-- HWH-NDLS TRACKING BAR -->
-                <div class="bg-black/40 p-6 rounded-xl border border-slate-800 relative mb-6">
-                    <h4 class="tech-font text-[8px] text-slate-600 mb-6 uppercase text-center">HWH-NDLS MAINLINE TRACKER</h4>
+            <!-- PROJECTS -->
+            <section id="tab-projects" class="tab-content hidden space-y-6">
+                <div class="bg-black/40 p-6 rounded-xl border border-slate-800 relative">
+                    <h4 class="text-[8px] tech-font text-slate-600 mb-6 text-center uppercase">HWH-NDLS TRACKER</h4>
                     <div class="relative px-2">
-                        <!-- OHE Line -->
                         <div class="ohe-line w-full absolute -top-4 left-0 opacity-40"></div>
-                        <!-- Progress Line -->
-                        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-slate-800 -translate-y-1/2"></div>
-                        
-                        <div class="flex justify-between items-center text-[7px] mono-font relative z-10">
-                            <div class="flex flex-col items-center gap-2">
-                                <div class="h-3 w-3 bg-red-600 rounded-full shadow-[0_0_10px_red]"></div>
-                                <span class="text-red-500 font-bold">HWH</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-2 text-slate-600"><span>•</span><span>DHN</span></div>
-                            <div class="flex flex-col items-center gap-2 text-slate-600"><span>•</span><span>GAYA</span></div>
-                            <div class="flex flex-col items-center gap-2 text-slate-600"><span>•</span><span>DDU</span></div>
-                            <div class="flex flex-col items-center gap-2 text-slate-600"><span>•</span><span>CNB</span></div>
-                            <div class="flex flex-col items-center gap-2">
-                                <div class="h-2 w-2 bg-slate-800 rounded-full"></div>
-                                <span class="text-slate-700">NDLS</span>
-                            </div>
+                        <div class="flex justify-between text-[7px] mono-font relative z-10">
+                            <span class="text-red-600">HWH</span><span>DHN</span><span>GAYA</span><span>DDU</span><span>CNB</span><span class="text-slate-700">NDLS</span>
                         </div>
+                        <div class="mt-2 h-[1px] bg-slate-800 w-full"></div>
                     </div>
                 </div>
-
-                <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
-                    <p class="tech-font text-[9px] text-red-600 uppercase">WAP-7i Locomotive</p>
-                    <p class="mono-font text-[8px] text-slate-500 uppercase">Phase: Design // Scale: TBD</p>
-                </div>
-                <div class="bg-slate-900/30 p-4 border border-blue-900/30 rounded-lg">
-                    <p class="tech-font text-[9px] text-blue-500 uppercase">AC First Class (H1)</p>
-                    <p class="mono-font text-[8px] text-slate-500 uppercase">Phase: Blueprint // Scale: TBD</p>
-                </div>
-            </section>
-
-            <!-- ARCHIVE TAB -->
-            <section id="tab-completed" class="tab-content hidden space-y-3">
-                <h3 class="tech-font text-[10px] text-slate-500 uppercase px-2">Archive</h3>
-                <div class="bg-slate-900/10 p-4 border border-slate-800/30 rounded-lg">
-                    <p class="tech-font text-[9px] text-slate-600 uppercase">Home Security V1</p>
-                    <p class="mono-font text-[8px] text-slate-700 uppercase">Status: Success</p>
+                <div class="space-y-2">
+                    <div class="p-3 bg-slate-900/40 border border-red-900/20 rounded">
+                        <p class="tech-font text-[9px] text-red-600">WAP-7i</p>
+                        <p class="mono-font text-[8px] text-slate-500 uppercase">Design Stage // Scale TBD</p>
+                    </div>
+                    <div class="p-3 bg-slate-900/40 border border-blue-900/20 rounded">
+                        <p class="tech-font text-[9px] text-blue-500">H1 COACH</p>
+                        <p class="mono-font text-[8px] text-slate-500 uppercase">Blueprint Stage // Scale TBD</p>
+                    </div>
                 </div>
             </section>
 
-            <!-- CHAT TAB -->
-            <section id="tab-chat" class="tab-content hidden flex flex-col h-[65vh]">
-                <div id="chat-box" class="flex-1 overflow-y-auto p-2 flex flex-col space-y-3"></div>
-                <div class="flex gap-2 p-2 mt-auto">
-                    <input id="chat-input" type="text" placeholder="TRANSMIT..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-2 text-red-600 mono-font text-[10px] outline-none">
-                    <button onclick="sendMessage()" class="bg-red-900 px-4 rounded-lg text-white"><i class="fa-solid fa-paper-plane"></i></button>
+            <!-- CHAT (FIXED) -->
+            <section id="tab-chat" class="tab-content hidden flex flex-col h-[70vh]">
+                <div id="chat-box" class="flex-1 overflow-y-auto p-2 space-y-3 border border-slate-900 rounded-lg mb-4 bg-black/20"></div>
+                <div class="flex gap-2">
+                    <input id="chat-input" type="text" placeholder="TRANSMIT..." class="flex-1 bg-black border border-slate-800 rounded px-4 py-2 text-red-500 mono-font text-[10px] outline-none">
+                    <button onclick="sendMessage()" class="bg-red-900 px-6 rounded text-white"><i class="fa-solid fa-paper-plane"></i></button>
                 </div>
             </section>
         </main>
 
-        <!-- NAVIGATION -->
-        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 px-2 flex justify-around items-center z-50">
+        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 flex justify-around items-center">
             <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house"></i></button>
             <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-rocket"></i></button>
-            <button onclick="showTab('completed', this)" class="nav-item text-slate-700"><i class="fa-solid fa-check-double"></i></button>
             <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal"></i></button>
         </nav>
     </div>
@@ -129,16 +93,13 @@
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
         const MASTER_LOG_KEY = 'taiwrc_v3_logs';
-        let chatLogs = JSON.parse(localStorage.getItem(MASTER_LOG_KEY)) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             if (database[u] === p) {
-                if(u.includes('Debpratim')) currentUser = "DEBPRATIM";
-                else if(u.includes('ayush')) currentUser = "AYUSH";
-                else if(u.includes('sartha')) currentUser = "SARTHAK";
-                document.getElementById('login-box').classList.add('hidden');
+                currentUser = u.split('-')[0].toUpperCase().replace('WAP7','').replace('WAG9','');
+                document.getElementById('login-box').style.display = 'none';
                 document.getElementById('main-content').classList.remove('hidden');
                 document.getElementById('welcome-msg').innerText = `ID: ${currentUser}`;
                 renderChat();
@@ -157,20 +118,31 @@
             const inp = document.getElementById('chat-input');
             const val = inp.value.trim();
             if(!val) return;
-            const msgData = { user: currentUser, text: val.toUpperCase(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
-            chatLogs.push(msgData);
-            localStorage.setItem(MASTER_LOG_KEY, JSON.stringify(chatLogs));
+
+            let logs = JSON.parse(localStorage.getItem(MASTER_LOG_KEY)) || [];
+            const msgData = { 
+                user: currentUser, 
+                text: val.toUpperCase(), 
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            };
+            
+            logs.push(msgData);
+            localStorage.setItem(MASTER_LOG_KEY, JSON.stringify(logs));
             inp.value = "";
             renderChat();
         }
 
         function renderChat() {
             const box = document.getElementById('chat-box');
-            box.innerHTML = chatLogs.map(l => {
+            let logs = JSON.parse(localStorage.getItem(MASTER_LOG_KEY)) || [];
+            
+            box.innerHTML = logs.map(l => {
                 const isMe = l.user === currentUser;
                 return `<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                     <span class="text-[6px] mono-font text-slate-600 mb-1">${l.user} [${l.time}]</span>
-                    <div class="px-3 py-2 rounded-lg text-[10px] mono-font ${isMe ? 'bg-red-950/40 text-red-500 border border-red-900/30' : 'bg-slate-900 text-slate-400 border border-slate-800'}">${l.text}</div></div>`;
+                    <div class="px-3 py-2 rounded-lg text-[10px] mono-font ${isMe ? 'bg-red-950/40 text-red-500 border border-red-900/30' : 'bg-slate-900 text-slate-400 border border-slate-800'}">
+                        ${l.text}
+                    </div></div>`;
             }).join('');
             box.scrollTop = box.scrollHeight;
         }
@@ -178,5 +150,4 @@
         document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
-                        </html>
-                        
+</html>
