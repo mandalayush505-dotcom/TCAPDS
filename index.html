@@ -16,7 +16,7 @@
         .nav-active { color: #b91c1c !important; filter: drop-shadow(0 0 8px rgba(185, 28, 28, 0.6)); }
         
         .bubble { max-width: 85%; padding: 12px; border-radius: 15px; margin-bottom: 8px; position: relative; font-size: 10px; line-height: 1.4; }
-        .bubble-right { align-self: flex-end; background: #7f1d1d; color: white; border-bottom-right-radius: 2px; border: 1px solid #991b1b; box-shadow: 0 4px 15px rgba(153, 27, 27, 0.2); }
+        .bubble-right { align-self: flex-end; background: #7f1d1d; color: white; border-bottom-right-radius: 2px; border: 1px solid #991b1b; }
         .bubble-left { align-self: flex-start; background: #1e293b; color: #94a3b8; border-bottom-left-radius: 2px; border: 1px solid #334155; }
         .time-stamp { font-size: 7px; opacity: 0.5; margin-top: 4px; display: block; font-family: 'JetBrains Mono'; }
     </style>
@@ -27,7 +27,7 @@
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
             <h1 class="text-4xl font-bold tech-font tracking-[0.2em] text-red-700 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">Command Interface v1.8</p>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase tracking-widest">Command Interface v2.0</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 focus:border-red-900 outline-none mono-font text-xs text-center text-red-500">
@@ -54,26 +54,26 @@
             <section id="tab-home" class="tab-content space-y-6">
                 <div class="bg-slate-900/20 border border-slate-800 p-4 rounded-lg">
                     <h3 class="tech-font text-[8px] text-slate-500 mb-2 uppercase">Status_Report</h3>
-                    <p class="text-xs mono-font text-slate-400">Terminal linked. Mainline corridor monitor active. Mecheda Ground Intel confirmed.</p>
+                    <p class="text-xs mono-font text-slate-400">Terminal linked. Grand Chord Corridor tracking enabled.</p>
                 </div>
 
                 <div class="bg-black/40 p-6 rounded-xl border border-slate-900 relative">
-                    <h4 class="tech-font text-[8px] text-slate-600 mb-8 uppercase text-center">Mainline Corridor</h4>
+                    <h4 class="tech-font text-[8px] text-slate-600 mb-8 uppercase text-center">Grand Chord Corridor</h4>
                     <div class="relative px-2">
                         <div class="ohe-line w-full absolute -top-4 left-0 opacity-30"></div>
                         <div class="flex justify-between items-center text-[8px] mono-font">
                             <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-red-600 rounded-full shadow-[0_0_8px_red]"></div><span>HWH</span></div>
-                            <span class="text-slate-700">MCA</span>
-                            <span class="text-slate-700">KGP</span>
-                            <span class="text-slate-700">TATA</span>
-                            <span class="text-slate-700">CKP</span>
-                            <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-slate-800 rounded-full"></div><span>ROU</span></div>
+                            <span class="text-slate-700">DHN</span>
+                            <span class="text-slate-700">GAYA</span>
+                            <span class="text-slate-700">DDU</span>
+                            <span class="text-slate-700">CNB</span>
+                            <div class="flex flex-col items-center gap-1"><div class="h-2 w-2 bg-slate-800 rounded-full"></div><span>NDLS</span></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ABOUT TAB (RE-FIXED CREW) -->
+            <!-- ABOUT/CREW TAB -->
             <section id="tab-about" class="tab-content hidden space-y-4">
                 <h3 class="tech-font text-xs text-red-800 uppercase tracking-widest px-2">Crew Registry</h3>
                 <div class="bg-slate-900/30 p-4 border-l-2 border-red-700 rounded-r-lg">
@@ -86,7 +86,20 @@
                 </div>
                 <div class="bg-slate-900/30 p-4 border-l-2 border-slate-800 rounded-r-lg">
                     <p class="tech-font text-[10px] text-slate-400 uppercase">Sarthak</p>
-                    <p class="mono-font text-[9px] text-slate-500 uppercase">WAG-9 Expert // Freight Logistics</p>
+                    <p class="mono-font text-[9px] text-slate-500 uppercase">Freight Specialist // WAG-9 Logic</p>
+                </div>
+            </section>
+
+            <!-- PROJECTS TAB -->
+            <section id="tab-projects" class="tab-content hidden space-y-4">
+                <h3 class="tech-font text-xs text-red-800 uppercase tracking-widest px-2">Active Manifest</h3>
+                <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
+                    <p class="tech-font text-[10px] text-red-600 uppercase">WAP-7i Locomotive</p>
+                    <p class="mono-font text-[9px] text-slate-500 uppercase">Scale 1:39 // Precision Engineering</p>
+                </div>
+                <div class="bg-slate-900/30 p-4 border border-slate-800 rounded-lg">
+                    <p class="tech-font text-[10px] text-slate-300 uppercase">AC First Class (H1)</p>
+                    <p class="mono-font text-[9px] text-slate-500 uppercase">Coach: 261104/S // COMPLETED</p>
                 </div>
             </section>
 
@@ -100,18 +113,19 @@
             </section>
         </main>
 
-        <!-- FOOTER NAV WITH ALL BUTTONS -->
-        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-6 px-8 flex justify-between items-center z-50">
-            <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house-signal text-xl"></i></button>
-            <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-shield text-xl"></i></button>
-            <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal text-xl"></i></button>
+        <!-- FOOTER NAV (All Buttons Restored) -->
+        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-6 px-4 flex justify-around items-center z-50">
+            <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house-signal text-lg"></i></button>
+            <button onclick="showTab('about', this)" class="nav-item text-slate-700"><i class="fa-solid fa-user-shield text-lg"></i></button>
+            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-microchip text-lg"></i></button>
+            <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal text-lg"></i></button>
         </nav>
     </div>
 
     <script>
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         let currentUser = "";
-        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v18')) || [];
+        let chatLogs = JSON.parse(localStorage.getItem('taiwrc_v20')) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
@@ -139,7 +153,7 @@
             if(!inp.value.trim()) return;
             const log = { user: currentUser, msg: inp.value.toUpperCase(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) };
             chatLogs.push(log);
-            localStorage.setItem('taiwrc_v18', JSON.stringify(chatLogs));
+            localStorage.setItem('taiwrc_v20', JSON.stringify(chatLogs));
             inp.value = "";
             renderChat();
         }
