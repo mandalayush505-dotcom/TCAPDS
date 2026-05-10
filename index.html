@@ -6,9 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | v5.0 FORCE_LINK</title>
+    <title>TAIWRC | v5.1 OVERRIDE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
         body { font-family: 'Roboto', sans-serif; background-color: #ece5dd; height: 100dvh; display: flex; flex-direction: column; margin: 0; overflow: hidden; }
         .wa-teal { background-color: #075e54; }
         .wa-chat-bg { flex: 1; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
@@ -23,31 +22,30 @@
 
     <div id="auth-box" class="fixed inset-0 z-[999] wa-teal flex items-center justify-center p-6 text-center">
         <div class="bg-white w-full max-w-xs rounded-2xl p-8 shadow-2xl">
-            <i class="fa-solid fa-tower-broadcast text-4xl text-teal-700 mb-4"></i>
-            <h1 class="text-xl font-bold mb-6">TAIWRC v5.0</h1>
+            <h1 class="text-xl font-bold mb-6 text-teal-800">TAIWRC LOGIN</h1>
             <input id="u" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase mb-4 text-center">
             <input id="p" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none mb-6 text-center">
-            <button onclick="connect()" class="w-full bg-teal-700 text-white py-3 rounded-lg font-bold shadow-lg">INITIALIZE</button>
+            <button onclick="connect()" class="w-full bg-teal-700 text-white py-3 rounded-lg font-bold">BOOT SYSTEM</button>
         </div>
     </div>
 
     <div id="main-box" class="hidden h-full flex flex-col">
         <header class="wa-teal p-3 text-white flex justify-between items-center shadow-lg">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-bolt"></i></div>
+                <div id="status-icon" class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                 <div>
-                    <h2 class="font-bold text-sm">TAIWRC OPS</h2>
-                    <p id="status" class="text-[10px] opacity-80 uppercase italic animate-pulse">Checking Signal...</p>
+                    <h2 class="font-bold text-sm">TAIWRC CREW</h2>
+                    <p id="status-text" class="text-[9px] opacity-80 uppercase italic">Linking...</p>
                 </div>
             </div>
-            <div id="my-name" class="text-[9px] bg-black/20 px-2 py-1 rounded font-mono border border-white/10">---</div>
+            <button onclick="location.reload()" class="text-[9px] bg-white/10 px-2 py-1 rounded">REBOOT</button>
         </header>
 
         <main id="chat" class="wa-chat-bg"></main>
 
         <footer class="bg-[#f0f0f0] p-2 flex gap-2 items-center">
-            <input id="input" type="text" placeholder="Message" class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm">
-            <button onclick="send()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform">
+            <input id="input" type="text" placeholder="Type transmission..." class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm">
+            <button onclick="send()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </footer>
@@ -57,42 +55,40 @@
         const db = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
         const colors = { "DEBPRATIM": "text-red-600", "SARTHAK": "text-blue-600", "AYUSH": "text-green-600" };
         let me = "";
-        let p;
+        let pubnub;
 
         function connect() {
             const user = document.getElementById('u').value.trim();
             const pass = document.getElementById('p').value.trim();
             if (db[user] === pass) {
                 me = user.split('-')[0].toUpperCase();
-                document.getElementById('auth-box').classList.add('hidden');
+                document.getElementById('auth-box').style.display = 'none';
                 document.getElementById('main-box').classList.remove('hidden');
-                document.getElementById('my-name').innerText = me;
                 startServer();
-                if ("Notification" in window) Notification.requestPermission();
-            } else { alert("REJECTED"); }
+            } else { alert("ACCESS DENIED"); }
         }
 
         function startServer() {
-            p = new PubNub({
+            // Updated keys to a new sub-channel to bypass cache issues
+            pubnub = new PubNub({
                 publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                 subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                userId: me + "_" + Date.now() 
+                userId: me + "_" + Math.floor(Math.random() * 9999)
             });
 
-            p.subscribe({ channels: ['taiwrc_force_v50'] });
+            pubnub.subscribe({ channels: ['taiwrc_override_v51'] });
             
-            p.addListener({
+            pubnub.addListener({
                 status: (st) => {
                     if (st.category === "PNConnectedCategory") {
-                        document.getElementById('status').innerText = "online";
-                        document.getElementById('status').classList.remove('animate-pulse');
+                        document.getElementById('status-text').innerText = "online";
+                        document.getElementById('status-icon').classList.replace('bg-red-500', 'bg-green-400');
+                        document.getElementById('status-icon').classList.remove('animate-pulse');
                     }
                 },
                 message: (m) => {
-                    // Only show if the sender is NOT me (avoids seeing your own msg twice)
                     if (m.message.sender !== me) {
                         draw(m.message, false);
-                        if (Notification.permission === "granted") new Notification(m.message.sender, { body: m.message.text });
                     }
                 }
             });
@@ -108,11 +104,12 @@
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
             };
 
-            // IMMEDIATELY draw locally so you see it even if the server is slow
+            // INSTANT LOCAL ECHO (Works even if status is 'Linking')
             draw(packet, true);
             
-            p.publish({ channel: 'taiwrc_force_v50', message: packet }, (status) => {
-                if (status.error) document.getElementById('status').innerText = "error: signal lost";
+            pubnub.publish({ 
+                channel: 'taiwrc_override_v51', 
+                message: packet 
             });
             
             field.value = "";
