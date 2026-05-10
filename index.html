@@ -6,121 +6,132 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | SYNC_FIX</title>
+    <title>TAIWRC | v5.0 FORCE_LINK</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
         body { font-family: 'Roboto', sans-serif; background-color: #ece5dd; height: 100dvh; display: flex; flex-direction: column; margin: 0; overflow: hidden; }
         .wa-teal { background-color: #075e54; }
-        .wa-chat-bg { flex: 1; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .bubble { max-width: 85%; padding: 8px 12px; border-radius: 10px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); font-size: 14px; min-width: 100px; }
+        .wa-chat-bg { flex: 1; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+        .bubble { max-width: 85%; padding: 6px 10px; border-radius: 10px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); font-size: 14px; min-width: 80px; }
         .sent { align-self: flex-end; background-color: #dcf8c6; border-top-right-radius: 0; }
         .received { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
-        .name-lbl { font-size: 11px; font-weight: 700; margin-bottom: 2px; display: block; text-transform: uppercase; }
-        .time-lbl { font-size: 10px; color: #888; text-align: right; margin-top: 4px; display: block; }
-        .footer-bar { background-color: #f0f0f0; padding: 10px; display: flex; gap: 10px; align-items: center; }
+        .name-lbl { font-size: 10px; font-weight: 700; margin-bottom: 2px; display: block; text-transform: uppercase; }
+        .time-lbl { font-size: 9px; color: #888; text-align: right; margin-top: 4px; display: block; }
     </style>
 </head>
 <body>
 
-    <div id="auth-box" class="fixed inset-0 z-[1000] wa-teal flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-xl p-8 shadow-2xl text-center">
-            <h1 class="text-2xl font-bold text-teal-900 mb-6 uppercase tracking-tighter">TAIWRC TERMINAL</h1>
-            <input id="u_name" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase mb-4 text-center">
-            <input id="u_pass" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none mb-6 text-center">
-            <button onclick="entry()" class="w-full bg-[#128c7e] text-white py-3 rounded-lg font-bold shadow-lg uppercase">Link System</button>
+    <div id="auth-box" class="fixed inset-0 z-[999] wa-teal flex items-center justify-center p-6 text-center">
+        <div class="bg-white w-full max-w-xs rounded-2xl p-8 shadow-2xl">
+            <i class="fa-solid fa-tower-broadcast text-4xl text-teal-700 mb-4"></i>
+            <h1 class="text-xl font-bold mb-6">TAIWRC v5.0</h1>
+            <input id="u" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase mb-4 text-center">
+            <input id="p" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none mb-6 text-center">
+            <button onclick="connect()" class="w-full bg-teal-700 text-white py-3 rounded-lg font-bold shadow-lg">INITIALIZE</button>
         </div>
     </div>
 
-    <div id="app-box" class="hidden h-full flex flex-col">
-        <header class="wa-teal p-3 text-white flex justify-between items-center">
+    <div id="main-box" class="hidden h-full flex flex-col">
+        <header class="wa-teal p-3 text-white flex justify-between items-center shadow-lg">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center border border-white/20"><i class="fa-solid fa-tower-cell"></i></div>
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-bolt"></i></div>
                 <div>
-                    <h2 class="font-bold text-sm tracking-wide">TAIWRC CREW</h2>
-                    <p id="net-status" class="text-[10px] opacity-70 uppercase italic">Linking...</p>
+                    <h2 class="font-bold text-sm">TAIWRC OPS</h2>
+                    <p id="status" class="text-[10px] opacity-80 uppercase italic animate-pulse">Checking Signal...</p>
                 </div>
             </div>
-            <div id="id-badge" class="text-[9px] bg-black/30 px-2 py-1 rounded font-mono border border-white/10 uppercase">---</div>
+            <div id="my-name" class="text-[9px] bg-black/20 px-2 py-1 rounded font-mono border border-white/10">---</div>
         </header>
 
-        <main id="chat-scroller" class="wa-chat-bg"></main>
+        <main id="chat" class="wa-chat-bg"></main>
 
-        <footer class="footer-bar">
-            <input id="msg-box" type="text" placeholder="Type transmission..." class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm shadow-sm">
-            <button onclick="broadcast()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform">
+        <footer class="bg-[#f0f0f0] p-2 flex gap-2 items-center">
+            <input id="input" type="text" placeholder="Message" class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm">
+            <button onclick="send()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg active:scale-90 transition-transform">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </footer>
     </div>
 
     <script>
-        const vault = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
-        const palette = { "DEBPRATIM": "text-red-600", "SARTHAK": "text-blue-600", "AYUSH": "text-green-600" };
-        let activeID = "";
-        let pb;
+        const db = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
+        const colors = { "DEBPRATIM": "text-red-600", "SARTHAK": "text-blue-600", "AYUSH": "text-green-600" };
+        let me = "";
+        let p;
 
-        function entry() {
-            const user = document.getElementById('u_name').value.trim();
-            const pass = document.getElementById('u_pass').value.trim();
-            if (vault[user] === pass) {
-                activeID = user.split('-')[0].toUpperCase();
+        function connect() {
+            const user = document.getElementById('u').value.trim();
+            const pass = document.getElementById('p').value.trim();
+            if (db[user] === pass) {
+                me = user.split('-')[0].toUpperCase();
                 document.getElementById('auth-box').classList.add('hidden');
-                document.getElementById('app-box').classList.remove('hidden');
-                document.getElementById('id-badge').innerText = activeID;
-                startLink();
+                document.getElementById('main-box').classList.remove('hidden');
+                document.getElementById('my-name').innerText = me;
+                startServer();
                 if ("Notification" in window) Notification.requestPermission();
-            } else { alert("ACCESS DENIED"); }
+            } else { alert("REJECTED"); }
         }
 
-        function startLink() {
-            pb = new PubNub({
+        function startServer() {
+            p = new PubNub({
                 publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                 subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                userId: activeID + "_" + Math.random().toString(36).substr(2, 5) // Unique Session ID
+                userId: me + "_" + Date.now() 
             });
 
-            pb.subscribe({ channels: ['taiwrc_universal_v49'] });
-            pb.addListener({
-                status: (s) => { if(s.category === "PNConnectedCategory") document.getElementById('net-status').innerText = "online"; },
+            p.subscribe({ channels: ['taiwrc_force_v50'] });
+            
+            p.addListener({
+                status: (st) => {
+                    if (st.category === "PNConnectedCategory") {
+                        document.getElementById('status').innerText = "online";
+                        document.getElementById('status').classList.remove('animate-pulse');
+                    }
+                },
                 message: (m) => {
-                    // Only show if it's NOT from the current session's ID
-                    if (m.publisher !== pb.getUUID()) {
-                        uiAdd(m.message, false);
-                        if (Notification.permission === "granted") new Notification(m.message.from, { body: m.message.text });
+                    // Only show if the sender is NOT me (avoids seeing your own msg twice)
+                    if (m.message.sender !== me) {
+                        draw(m.message, false);
+                        if (Notification.permission === "granted") new Notification(m.message.sender, { body: m.message.text });
                     }
                 }
             });
         }
 
-        function broadcast() {
-            const input = document.getElementById('msg-box');
-            if(!input.value.trim()) return;
+        function send() {
+            const field = document.getElementById('input');
+            if(!field.value.trim()) return;
 
             const packet = {
-                from: activeID,
-                text: input.value,
+                sender: me,
+                text: field.value,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
             };
 
-            uiAdd(packet, true); // Show locally immediately
-            pb.publish({ channel: 'taiwrc_universal_v49', message: packet });
-            input.value = "";
+            // IMMEDIATELY draw locally so you see it even if the server is slow
+            draw(packet, true);
+            
+            p.publish({ channel: 'taiwrc_force_v50', message: packet }, (status) => {
+                if (status.error) document.getElementById('status').innerText = "error: signal lost";
+            });
+            
+            field.value = "";
         }
 
-        function uiAdd(data, isMe) {
-            const chat = document.getElementById('chat-scroller');
-            const color = palette[data.from] || "text-teal-700";
-            const bubble = `
+        function draw(data, isMe) {
+            const chat = document.getElementById('chat');
+            const color = colors[data.sender] || "text-teal-700";
+            const html = `
                 <div class="bubble ${isMe ? 'sent' : 'received'}">
-                    ${!isMe ? `<span class="name-lbl ${color}">${data.from}</span>` : ''}
-                    <p class="text-gray-800 leading-snug">${data.text}</p>
+                    ${!isMe ? `<span class="name-lbl ${color}">${data.sender}</span>` : ''}
+                    <p class="text-gray-800">${data.text}</p>
                     <span class="time-lbl">${data.time} ${isMe ? '✓✓' : ''}</span>
                 </div>`;
-            chat.insertAdjacentHTML('beforeend', bubble);
+            chat.insertAdjacentHTML('beforeend', html);
             chat.scrollTop = chat.scrollHeight;
         }
 
-        document.getElementById('msg-box').addEventListener('keypress', (e) => { if(e.key === 'Enter') broadcast(); });
+        document.getElementById('input').addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
     </script>
 </body>
 </html>
