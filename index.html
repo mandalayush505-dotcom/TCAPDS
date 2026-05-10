@@ -5,103 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC TERMINAL</title>
+    <title>TAIWRC TERMINAL | AYUSH_CORE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap');
         .tech-font { font-family: 'Orbitron', sans-serif; }
         .mono-font { font-family: 'JetBrains Mono', monospace; }
-        body { background-color: #020617; color: #cbd5e1; }
+        body { background-color: #020617; color: #cbd5e1; overflow: hidden; height: 100vh; }
         .glass { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .ohe-line { height: 1px; background: repeating-linear-gradient(90deg, #334155 0, #334155 10px, transparent 10px, transparent 20px); }
-        .nav-active { color: #b91c1c !important; filter: drop-shadow(0 0 10px rgba(185, 28, 28, 0.8)); }
-        #chat-box::-webkit-scrollbar { width: 4px; }
-        #chat-box::-webkit-scrollbar-thumb { background: #450a0a; border-radius: 10px; }
+        .nav-active { color: #b91c1c !important; filter: drop-shadow(0 0 8px rgba(185, 28, 28, 0.6)); }
+        .glow-red { box-shadow: 0 0 15px rgba(185, 28, 28, 0.3); }
     </style>
 </head>
-<body class="selection:bg-red-900/50 overflow-hidden h-screen">
+<body class="selection:bg-red-900/50">
 
     <!-- LOGIN -->
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
-        <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900">
-            <h1 class="text-4xl font-bold tech-font text-red-700 mb-8">TAIWRC</h1>
+        <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-900 shadow-2xl">
+            <h1 class="text-4xl font-bold tech-font tracking-widest text-red-700 mb-2">TAIWRC</h1>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase">Operator: Ayush // v3.8</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500">
-                <button onclick="login()" class="w-full bg-red-900 py-4 rounded-lg tech-font font-bold text-xs">MOUNT_CORE</button>
+                <button onclick="login()" class="w-full bg-red-900 hover:bg-red-800 py-4 rounded-lg tech-font font-bold text-xs transition-all">MOUNT_CORE</button>
             </div>
         </div>
     </div>
 
-    <!-- INTERFACE -->
+    <!-- MAIN INTERFACE -->
     <div id="main-content" class="hidden flex flex-col h-full">
         <header class="p-4 glass border-b border-slate-900 flex justify-between items-center">
-            <h2 class="tech-font text-red-700 text-sm">TAIWRC_CORE v3.6</h2>
-            <p id="welcome-msg" class="text-[7px] mono-font text-slate-500 uppercase"></p>
+            <div class="flex items-center gap-3">
+                <div class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
+                <h2 class="tech-font text-red-700 text-sm tracking-tighter">AYUSH_SYSTEM_ACTIVE</h2>
+            </div>
+            <button onclick="syncForce()" class="text-[7px] mono-font bg-blue-900/20 border border-blue-900 px-2 py-1 rounded text-blue-400 uppercase">Sync Broadcast</button>
         </header>
 
         <main class="flex-1 p-4 overflow-y-auto pb-24">
-            <!-- HOME -->
-            <section id="tab-home" class="tab-content space-y-4">
+            <!-- CHAT TAB (SYNC READY) -->
+            <section id="tab-chat" class="tab-content flex flex-col h-[75vh]">
+                <div class="flex justify-between items-center mb-2 px-1">
+                    <span class="text-[6px] mono-font text-red-900/50 uppercase tracking-widest">Global_Transmission_Stream</span>
+                    <span id="sync-status" class="text-[6px] mono-font text-slate-700 uppercase">Local Mode</span>
+                </div>
+                <div id="chat-box" class="flex-1 overflow-y-auto p-3 space-y-4 border border-slate-900 rounded-xl bg-black/40 shadow-inner"></div>
+                
+                <div class="flex gap-2 mt-4">
+                    <input id="chat-input" type="text" placeholder="TRANSMIT TO CREW..." 
+                           class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-3 text-red-500 mono-font text-[10px] outline-none focus:border-red-900 transition-colors">
+                    <button onclick="sendMessage()" class="bg-red-900 hover:bg-red-700 px-6 rounded-lg text-white shadow-lg active:scale-95 transition-transform">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- PROJECTS (Ayush Priority) -->
+            <section id="tab-projects" class="tab-content hidden space-y-4">
+                <div class="p-4 bg-red-900/10 border border-red-900/30 rounded-lg glow-red">
+                    <h3 class="tech-font text-[10px] text-red-600 mb-2">H1 COACH BLUEPRINT</h3>
+                    <p class="mono-font text-[8px] text-slate-400 uppercase">Status: Designing // Scale: TBD</p>
+                </div>
                 <div class="p-4 bg-slate-900/30 border border-slate-800 rounded-lg">
-                    <p class="text-[8px] mono-font text-slate-500 uppercase mb-2">Directives</p>
-                    <p class="text-[10px] mono-font text-slate-300 leading-relaxed">SER/ER/NCR Zone Logic Active. Scale: TBD. Bernoulli Analysis: Online.</p>
-                </div>
-            </section>
-
-            <!-- PROJECTS -->
-            <section id="tab-projects" class="tab-content hidden space-y-6">
-                <div class="bg-black/40 p-6 rounded-xl border border-slate-800 relative">
-                    <h4 class="text-[8px] tech-font text-slate-600 mb-6 text-center uppercase">HWH-NDLS TRACKER</h4>
-                    <div class="relative px-2">
-                        <div class="ohe-line w-full absolute -top-4 left-0 opacity-40"></div>
-                        <div class="flex justify-between text-[7px] mono-font relative z-10">
-                            <span class="text-red-600">HWH</span><span>DHN</span><span>GAYA</span><span>DDU</span><span>CNB</span><span class="text-slate-700">NDLS</span>
-                        </div>
-                        <div class="mt-2 h-[1px] bg-slate-800 w-full"></div>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <div class="p-3 bg-slate-900/40 border border-red-900/20 rounded">
-                        <p class="tech-font text-[9px] text-red-600">WAP-7i</p>
-                        <p class="mono-font text-[8px] text-slate-500 uppercase">Design Stage // Scale TBD</p>
-                    </div>
-                    <div class="p-3 bg-slate-900/40 border border-blue-900/20 rounded">
-                        <p class="tech-font text-[9px] text-blue-500">H1 COACH</p>
-                        <p class="mono-font text-[8px] text-slate-500 uppercase">Blueprint Stage // Scale TBD</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CHAT (FIXED) -->
-            <section id="tab-chat" class="tab-content hidden flex flex-col h-[70vh]">
-                <div id="chat-box" class="flex-1 overflow-y-auto p-2 space-y-3 border border-slate-900 rounded-lg mb-4 bg-black/20"></div>
-                <div class="flex gap-2">
-                    <input id="chat-input" type="text" placeholder="TRANSMIT..." class="flex-1 bg-black border border-slate-800 rounded px-4 py-2 text-red-500 mono-font text-[10px] outline-none">
-                    <button onclick="sendMessage()" class="bg-red-900 px-6 rounded text-white"><i class="fa-solid fa-paper-plane"></i></button>
+                    <h3 class="tech-font text-[10px] text-blue-600 mb-2">WAP-7I LOCOMOTIVE</h3>
+                    <p class="mono-font text-[8px] text-slate-400 uppercase">Status: Conceptual // Scale: TBD</p>
                 </div>
             </section>
         </main>
 
-        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 flex justify-around items-center">
-            <button onclick="showTab('home', this)" class="nav-item nav-active"><i class="fa-solid fa-house"></i></button>
-            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-rocket"></i></button>
-            <button onclick="showTab('chat', this)" class="nav-item text-slate-700"><i class="fa-solid fa-terminal"></i></button>
+        <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-5 flex justify-around items-center z-50">
+            <button onclick="showTab('chat', this)" class="nav-item nav-active px-4"><i class="fa-solid fa-terminal"></i></button>
+            <button onclick="showTab('projects', this)" class="nav-item text-slate-700 px-4"><i class="fa-solid fa-rocket"></i></button>
         </nav>
     </div>
 
     <script>
         const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
-        let currentUser = "";
-        const MASTER_LOG_KEY = 'taiwrc_v3_logs';
+        let currentUser = "AYUSH";
+        let sessionLogs = JSON.parse(localStorage.getItem('taiwrc_v3_logs')) || [];
 
         function login() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
             if (database[u] === p) {
-                currentUser = u.split('-')[0].toUpperCase().replace('WAP7','').replace('WAG9','');
+                currentUser = u.split('-')[0].toUpperCase().replace('AYUSH','AYUSH');
                 document.getElementById('login-box').style.display = 'none';
                 document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('welcome-msg').innerText = `ID: ${currentUser}`;
                 renderChat();
             } else { alert("ACCESS DENIED"); }
         }
@@ -111,7 +99,7 @@
             document.getElementById(`tab-${id}`).classList.remove('hidden');
             document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('nav-active'); n.classList.add('text-slate-700'); });
             btn.classList.add('nav-active'); btn.classList.remove('text-slate-700');
-            if(id === 'chat') renderChat();
+            renderChat();
         }
 
         function sendMessage() {
@@ -119,30 +107,44 @@
             const val = inp.value.trim();
             if(!val) return;
 
-            let logs = JSON.parse(localStorage.getItem(MASTER_LOG_KEY)) || [];
             const msgData = { 
                 user: currentUser, 
                 text: val.toUpperCase(), 
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
             };
             
-            logs.push(msgData);
-            localStorage.setItem(MASTER_LOG_KEY, JSON.stringify(logs));
+            sessionLogs.push(msgData);
+            localStorage.setItem('taiwrc_v3_logs', JSON.stringify(sessionLogs));
             inp.value = "";
             renderChat();
         }
 
+        // FORCE BROADCAST: Copy this to your crew to "Receive" messages
+        function syncForce() {
+            const data = btoa(JSON.stringify(sessionLogs)); // Encode to base64
+            const code = prompt("TO BROADCAST: Copy this code and send to crew.\nTO RECEIVE: Paste their code here:", data);
+            if (code && code !== data) {
+                try {
+                    const receivedLogs = JSON.parse(atob(code));
+                    sessionLogs = [...new Set([...sessionLogs, ...receivedLogs].map(JSON.stringify))].map(JSON.parse);
+                    localStorage.setItem('taiwrc_v3_logs', JSON.stringify(sessionLogs));
+                    renderChat();
+                    alert("SYNC SUCCESSFUL");
+                } catch(e) { alert("SYNC ERROR: INVALID CODE"); }
+            }
+        }
+
         function renderChat() {
             const box = document.getElementById('chat-box');
-            let logs = JSON.parse(localStorage.getItem(MASTER_LOG_KEY)) || [];
-            
-            box.innerHTML = logs.map(l => {
+            if(!box) return;
+            box.innerHTML = sessionLogs.map(l => {
                 const isMe = l.user === currentUser;
                 return `<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                    <span class="text-[6px] mono-font text-slate-600 mb-1">${l.user} [${l.time}]</span>
-                    <div class="px-3 py-2 rounded-lg text-[10px] mono-font ${isMe ? 'bg-red-950/40 text-red-500 border border-red-900/30' : 'bg-slate-900 text-slate-400 border border-slate-800'}">
-                        ${l.text}
-                    </div></div>`;
+                    <span class="text-[6px] mono-font text-slate-600 mb-1 px-1">${l.user} • ${l.time}</span>
+                    <div class="max-w-[85%] px-4 py-2 rounded-2xl text-[10px] mono-font ${
+                        isMe ? 'bg-red-900/30 text-red-400 border border-red-900/20' 
+                             : 'bg-slate-900/80 text-slate-300 border border-slate-800'
+                    }">${l.text}</div></div>`;
             }).join('');
             box.scrollTop = box.scrollHeight;
         }
@@ -150,4 +152,5 @@
         document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
-</html>
+                        </html>
+    
