@@ -6,134 +6,175 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | FULL_SCREEN</title>
+    <title>TAIWRC CENTRAL SERVER</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        body { font-family: 'Roboto', sans-serif; background-color: #ece5dd; margin: 0; padding: 0; }
-        /* Fix for mobile "sandwich" overlap */
-        .app-container { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-        .wa-teal { background-color: #075e54; }
-        .wa-chat-bg { 
-            flex: 1;
-            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
-            background-repeat: repeat;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .message-bubble { max-width: 85%; padding: 6px 10px; border-radius: 8px; position: relative; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); min-width: 80px; }
-        .sent { align-self: flex-end; background-color: #dcf8c6; border-top-right-radius: 0; }
-        .received { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
-        .input-area { background-color: #f0f0f0; padding: 8px; display: flex; items-center: center; gap: 8px; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono&display=swap');
+        
+        /* GLOBAL RESET */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { height: 100%; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; overflow: hidden; background-color: #e5ddd5; }
+        
+        /* LAYOUT ENGINE */
+        .app-wrapper { display: flex; flex-direction: column; height: 100dvh; width: 100%; position: relative; }
+        .wa-header { background-color: #075e54; color: white; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 50; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .wa-chat-canvas { flex: 1; overflow-y: auto; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-attachment: fixed; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        
+        /* MESSAGE STYLING */
+        .msg-bubble { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 14px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.15); min-width: 90px; line-height: 1.4; }
+        .msg-sent { align-self: flex-end; background-color: #dcf8c6; border-top-right-radius: 0; }
+        .msg-received { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
+        
+        /* IDENTITY LABELS */
+        .name-tag { font-size: 11px; font-weight: 700; margin-bottom: 3px; display: block; text-transform: uppercase; }
+        .time-tag { font-size: 10px; color: #888; text-align: right; margin-top: 4px; display: block; }
+        
+        /* INPUT AREA */
+        .wa-footer { background-color: #f0f0f0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; z-index: 50; }
+        .input-pill { flex: 1; background: white; border-radius: 24px; padding: 8px 16px; display: flex; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .input-pill input { border: none; outline: none; width: 100%; font-size: 15px; }
+        .send-btn { background-color: #128c7e; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.3); flex-shrink: 0; transition: transform 0.1s; }
+        .send-btn:active { transform: scale(0.9); }
+        
+        /* LOGIN OVERLAY */
+        #login-screen { position: fixed; inset: 0; background: #075e54; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; width: 100%; max-w: 350px; border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .login-field { width: 100%; border: none; border-bottom: 2px solid #075e54; padding: 10px; margin-bottom: 20px; outline: none; font-weight: 500; font-size: 16px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div id="login-box" class="fixed inset-0 z-[200] wa-teal flex items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-lg p-8 shadow-2xl">
-            <h1 class="text-2xl font-bold text-center text-teal-900 mb-6">TAIWRC LOGIN</h1>
-            <div class="space-y-4">
-                <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase">
-                <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none">
-                <button onclick="login()" class="w-full bg-green-600 text-white py-3 rounded font-bold uppercase tracking-widest">Connect</button>
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-train-subway text-4xl text-green-600 mb-2"></i>
+                <h1 class="text-xl font-bold text-gray-800">TAIWRC TERMINAL</h1>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Central Server v4.8</p>
             </div>
+            <input id="user_id" type="text" placeholder="UNIT_ID" class="login-field uppercase">
+            <input id="key_id" type="password" placeholder="KEY_CODE" class="login-field">
+            <button onclick="attemptLogin()" class="w-full bg-[#128c7e] text-white py-3 rounded-lg font-bold shadow-lg hover:bg-[#075e54] transition-colors">MOUNT ENGINE</button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden app-container">
-        <header class="wa-teal p-3 text-white flex justify-between items-center z-50">
+    <div id="main-interface" class="hidden app-wrapper">
+        <header class="wa-header">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-teal-900">
-                    <i class="fa-solid fa-train"></i>
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center border border-white/30">
+                    <i class="fa-solid fa-microchip text-xl"></i>
                 </div>
                 <div>
-                    <h2 class="font-bold text-sm">TAIWRC CREW</h2>
-                    <p id="status-text" class="text-[10px] opacity-80 italic">Connecting...</p>
+                    <h2 class="font-bold text-sm tracking-wide">TAIWRC CREW</h2>
+                    <div class="flex items-center gap-1.5">
+                        <div id="led" class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+                        <span id="status" class="text-[10px] uppercase font-bold text-white/70 italic">Synchronizing...</span>
+                    </div>
                 </div>
             </div>
-            <div class="flex gap-4 opacity-80">
-                <i class="fa-solid fa-video"></i>
-                <i class="fa-solid fa-phone"></i>
+            <div class="flex gap-4 text-white/80">
+                <i class="fa-solid fa-signal"></i>
+                <span id="my-tag" class="text-[10px] bg-black/20 px-2 py-0.5 rounded font-mono uppercase tracking-tighter border border-white/10">---</span>
             </div>
         </header>
 
-        <main id="chat-box" class="wa-chat-bg">
-            <div class="bg-blue-100 text-[10px] text-center p-1 rounded shadow-sm mx-auto mb-2 w-3/4 border border-blue-200">
-                Network: SECR/ER/SER Active
-            </div>
-        </main>
+        <main id="view-port" class="wa-chat-canvas"></main>
 
-        <footer class="input-area">
-            <div class="flex-1 bg-white rounded-full px-4 py-2 flex items-center shadow-sm">
-                <input id="chat-input" type="text" placeholder="Type a message" class="flex-1 outline-none text-sm bg-transparent">
+        <footer class="wa-footer">
+            <div class="input-pill">
+                <input id="msg-input" type="text" placeholder="Enter Transmission..." autocomplete="off">
             </div>
-            <button onclick="sendMessage()" class="bg-[#128c7e] w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md">
-                <i class="fa-solid fa-paper-plane text-sm"></i>
+            <button onclick="handleBroadcast()" class="send-btn">
+                <i class="fa-solid fa-paper-plane text-lg"></i>
             </button>
         </footer>
     </div>
 
     <script>
-        const database = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
-        let currentUser = "";
-        let pubnub;
+        // LOGISTICS & SECURITY
+        const crew_db = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
+        const crew_colors = { "DEBPRATIM": "#d32f2f", "SARTHAK": "#1976d2", "AYUSH": "#388e3c" };
+        let active_user = "";
+        let pb_tower;
 
-        function login() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            if (database[u] === p) {
-                currentUser = u.split('-')[0].toUpperCase();
-                document.getElementById('login-box').classList.add('hidden');
-                document.getElementById('main-content').classList.remove('hidden');
-                initPubNub();
-                Notification.requestPermission();
-            } else { alert("INVALID_ID"); }
+        // AUTHENTICATION ENGINE
+        function attemptLogin() {
+            const uid = document.getElementById('user_id').value.trim();
+            const kid = document.getElementById('key_id').value.trim();
+            if (crew_db[uid] === kid) {
+                active_user = uid.split('-')[0].toUpperCase();
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-interface').classList.remove('hidden');
+                document.getElementById('my-tag').innerText = active_user;
+                initializeServer();
+                if ("Notification" in window) Notification.requestPermission();
+            } else { alert("ACCESS DENIED: INVALID UNIT SIGNATURE"); }
         }
 
-        function initPubNub() {
-            pubnub = new PubNub({
+        // SERVER INITIALIZATION
+        function initializeServer() {
+            pb_tower = new PubNub({
                 publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                 subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                userId: currentUser
+                userId: active_user
             });
-            pubnub.subscribe({ channels: ['taiwrc_full_v46'] });
-            pubnub.addListener({
+
+            pb_tower.subscribe({ channels: ['taiwrc_expanded_v48'] });
+            
+            pb_tower.addListener({
+                status: (s) => {
+                    if (s.category === "PNConnectedCategory") {
+                        document.getElementById('led').classList.replace('bg-red-500', 'bg-green-400');
+                        document.getElementById('status').innerText = "online";
+                    }
+                },
                 message: (m) => {
-                    if (m.publisher !== currentUser) {
-                        renderMessage(m.message, false);
-                        if (Notification.permission === "granted") {
-                            new Notification(`TAIWRC: ${m.message.user}`, { body: m.message.text });
-                        }
+                    if (m.publisher !== active_user) {
+                        renderMsg(m.message, false);
+                        triggerNotification(m.message);
                     }
                 }
             });
-            document.getElementById('status-text').innerText = "online";
         }
 
-        function sendMessage() {
-            const inp = document.getElementById('chat-input');
-            if(!inp.value.trim()) return;
-            const msg = { user: currentUser, text: inp.value, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) };
-            renderMessage(msg, true);
-            pubnub.publish({ channel: 'taiwrc_full_v46', message: msg });
-            inp.value = "";
+        // BROADCAST LOGIC
+        function handleBroadcast() {
+            const field = document.getElementById('msg-input');
+            const data = field.value.trim();
+            if(!data) return;
+
+            const packet = {
+                sender: active_user,
+                content: data,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+            };
+
+            renderMsg(packet, true);
+            pb_tower.publish({ channel: 'taiwrc_expanded_v48', message: packet });
+            field.value = "";
         }
 
-        function renderMessage(data, isMe) {
-            const box = document.getElementById('chat-box');
-            const html = `
-                <div class="message-bubble ${isMe ? 'sent' : 'received'}">
-                    ${!isMe ? `<p class="text-[9px] font-bold text-teal-700 uppercase">${data.user}</p>` : ''}
-                    <p class="text-[14px] text-gray-900">${data.text}</p>
-                    <p class="text-[8px] text-gray-500 text-right mt-1">${data.time} ${isMe ? '✓✓' : ''}</p>
+        // VISUAL RENDERING
+        function renderMsg(p, isSelf) {
+            const box = document.getElementById('view-port');
+            const color = crew_colors[p.sender] || "#075e54";
+            const bubbleHtml = `
+                <div class="msg-bubble ${isSelf ? 'msg-sent' : 'msg-received'}">
+                    ${!isSelf ? `<span class="name-tag" style="color:${color}">${p.sender}</span>` : ''}
+                    <div class="text-gray-800 font-medium">${p.content}</div>
+                    <span class="time-tag">${p.timestamp} ${isSelf ? ' <i class="fa-solid fa-check-double text-blue-500 text-[8px]"></i>' : ''}</span>
                 </div>`;
-            box.insertAdjacentHTML('beforeend', html);
+            box.insertAdjacentHTML('beforeend', bubbleHtml);
             box.scrollTop = box.scrollHeight;
         }
 
-        document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        // PUSH NOTIFICATION
+        function triggerNotification(p) {
+            if (Notification.permission === "granted") {
+                new Notification(`TAIWRC: ${p.sender}`, { body: p.content, icon: 'https://cdn-icons-png.flaticon.com/512/733/733585.png' });
+            }
+        }
+
+        // KEYBOARD SUPPORT
+        document.getElementById('msg-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleBroadcast(); });
     </script>
 </body>
 </html>
