@@ -2,73 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | WHATSAPP_SYNC</title>
+    <title>TAIWRC | FULL_SCREEN</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono&display=swap');
-        body { background-color: #ece5dd; font-family: 'Roboto', sans-serif; overflow: hidden; height: 100vh; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #ece5dd; margin: 0; padding: 0; }
+        /* Fix for mobile "sandwich" overlap */
+        .app-container { height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
         .wa-teal { background-color: #075e54; }
-        .wa-green { background-color: #128c7e; }
-        .wa-light-green { background-color: #dcf8c6; }
-        .wa-chat-bg { background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; }
-        .mono-font { font-family: 'JetBrains Mono', monospace; }
-        #chat-box::-webkit-scrollbar { width: 4px; }
-        #chat-box::-webkit-scrollbar-thumb { background: #075e54; }
+        .wa-chat-bg { 
+            flex: 1;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
+            background-repeat: repeat;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .message-bubble { max-width: 85%; padding: 6px 10px; border-radius: 8px; position: relative; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); min-width: 80px; }
+        .sent { align-self: flex-end; background-color: #dcf8c6; border-top-right-radius: 0; }
+        .received { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
+        .input-area { background-color: #f0f0f0; padding: 8px; display: flex; items-center: center; gap: 8px; }
     </style>
 </head>
-<body class="flex flex-col h-full">
+<body>
 
-    <div id="login-box" class="fixed inset-0 z-[100] wa-teal flex flex-col items-center justify-center p-6">
-        <div class="bg-white w-full max-w-sm rounded-lg p-8 shadow-xl text-center">
-            <div class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <i class="fa-solid fa-train text-white text-3xl"></i>
-            </div>
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">TAIWRC SYNC</h1>
+    <div id="login-box" class="fixed inset-0 z-[200] wa-teal flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm rounded-lg p-8 shadow-2xl">
+            <h1 class="text-2xl font-bold text-center text-teal-900 mb-6">TAIWRC LOGIN</h1>
             <div class="space-y-4">
-                <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-green-500 outline-none uppercase text-sm">
-                <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-green-500 outline-none text-sm">
-                <button onclick="login()" class="w-full bg-green-600 text-white py-3 rounded shadow hover:bg-green-700 font-bold">CONNECT CORE</button>
+                <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase">
+                <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none">
+                <button onclick="login()" class="w-full bg-green-600 text-white py-3 rounded font-bold uppercase tracking-widest">Connect</button>
             </div>
         </div>
     </div>
 
-    <div id="main-content" class="hidden flex flex-col h-full">
-        <header class="wa-teal p-4 text-white flex justify-between items-center shadow-md">
+    <div id="main-content" class="hidden app-container">
+        <header class="wa-teal p-3 text-white flex justify-between items-center z-50">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-arrow-left text-sm"></i>
-                <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-teal-900">
-                    <i class="fa-solid fa-user-group text-xl"></i>
+                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-teal-900">
+                    <i class="fa-solid fa-train"></i>
                 </div>
                 <div>
-                    <h2 class="font-bold text-md leading-tight">TAIWRC CREW</h2>
-                    <p id="status-text" class="text-[10px] opacity-80">Connecting to server...</p>
+                    <h2 class="font-bold text-sm">TAIWRC CREW</h2>
+                    <p id="status-text" class="text-[10px] opacity-80 italic">Connecting...</p>
                 </div>
             </div>
-            <div class="flex gap-4 text-lg">
-                <i class="fa-solid fa-video opacity-60"></i>
-                <i class="fa-solid fa-phone opacity-60"></i>
-                <i class="fa-solid fa-ellipsis-vertical"></i>
+            <div class="flex gap-4 opacity-80">
+                <i class="fa-solid fa-video"></i>
+                <i class="fa-solid fa-phone"></i>
             </div>
         </header>
 
-        <main id="chat-box" class="flex-1 overflow-y-auto p-4 wa-chat-bg space-y-2 flex flex-col">
-            <div class="bg-yellow-100 text-[10px] text-center p-1 rounded shadow-sm mx-auto mb-4 w-3/4 text-gray-600 border border-yellow-200">
-                Messages are end-to-end encrypted for TAIWRC Ops.
+        <main id="chat-box" class="wa-chat-bg">
+            <div class="bg-blue-100 text-[10px] text-center p-1 rounded shadow-sm mx-auto mb-2 w-3/4 border border-blue-200">
+                Network: SECR/ER/SER Active
             </div>
         </main>
 
-        <footer class="p-2 flex items-center gap-2 bg-[#f0f0f0]">
+        <footer class="input-area">
             <div class="flex-1 bg-white rounded-full px-4 py-2 flex items-center shadow-sm">
-                <i class="fa-regular fa-face-smile text-gray-500 mr-2"></i>
-                <input id="chat-input" type="text" placeholder="Message" class="flex-1 outline-none text-sm py-1">
-                <i class="fa-solid fa-paperclip text-gray-500 ml-2 rotate-45"></i>
-                <i class="fa-solid fa-camera text-gray-500 ml-4"></i>
+                <input id="chat-input" type="text" placeholder="Type a message" class="flex-1 outline-none text-sm bg-transparent">
             </div>
-            <button onclick="sendMessage()" class="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-md active:scale-90 transition-transform">
-                <i id="send-icon" class="fa-solid fa-paper-plane"></i>
+            <button onclick="sendMessage()" class="bg-[#128c7e] w-11 h-11 rounded-full flex items-center justify-center text-white shadow-md">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
             </button>
         </footer>
     </div>
@@ -78,15 +80,16 @@
         let currentUser = "";
         let pubnub;
 
-        async function requestNotificationPermission() {
-            if ("Notification" in window) {
-                const permission = await Notification.requestPermission();
-                if (permission === "granted") {
-                    console.log("Alerts Enabled");
-                } else {
-                    alert("ALERTS ARE OFF: Please enable notifications in your browser settings to receive messages!");
-                }
-            }
+        function login() {
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
+            if (database[u] === p) {
+                currentUser = u.split('-')[0].toUpperCase();
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                initPubNub();
+                Notification.requestPermission();
+            } else { alert("INVALID_ID"); }
         }
 
         function initPubNub() {
@@ -95,76 +98,42 @@
                 subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
                 userId: currentUser
             });
-
-            pubnub.subscribe({ channels: ['taiwrc_wa_v45'] });
+            pubnub.subscribe({ channels: ['taiwrc_full_v46'] });
             pubnub.addListener({
                 message: (m) => {
                     if (m.publisher !== currentUser) {
                         renderMessage(m.message, false);
-                        showPush(m.message);
+                        if (Notification.permission === "granted") {
+                            new Notification(`TAIWRC: ${m.message.user}`, { body: m.message.text });
+                        }
                     }
                 }
             });
-
             document.getElementById('status-text').innerText = "online";
-        }
-
-        function showPush(data) {
-            if (Notification.permission === "granted") {
-                const n = new Notification(`TAIWRC: ${data.user}`, {
-                    body: data.text,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/733/733585.png'
-                });
-            }
-        }
-
-        function login() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            if (database[u] === p) {
-                currentUser = u.split('-')[0].toUpperCase();
-                document.getElementById('login-box').style.display = 'none';
-                document.getElementById('main-content').classList.remove('hidden');
-                requestNotificationPermission();
-                initPubNub();
-            } else { alert("ACCESS DENIED"); }
         }
 
         function sendMessage() {
             const inp = document.getElementById('chat-input');
             if(!inp.value.trim()) return;
-
-            const msgObj = {
-                user: currentUser,
-                text: inp.value,
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
-            };
-
-            renderMessage(msgObj, true);
-            pubnub.publish({ channel: 'taiwrc_wa_v45', message: msgObj });
+            const msg = { user: currentUser, text: inp.value, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) };
+            renderMessage(msg, true);
+            pubnub.publish({ channel: 'taiwrc_full_v46', message: msg });
             inp.value = "";
         }
 
         function renderMessage(data, isMe) {
             const box = document.getElementById('chat-box');
-            const align = isMe ? 'self-end' : 'self-start';
-            const color = isMe ? 'wa-light-green' : 'bg-white';
-            
-            const msgHtml = `
-                <div class="${align} max-w-[80%] rounded-lg px-2 py-1 shadow-sm mb-1 ${color} relative min-w-[60px]">
-                    ${!isMe ? `<p class="text-[10px] font-bold text-blue-600 mb-0.5 uppercase">${data.user}</p>` : ''}
-                    <p class="text-[14px] text-gray-800 pr-10">${data.text}</p>
-                    <div class="absolute bottom-1 right-1 flex items-center gap-1">
-                        <span class="text-[9px] text-gray-500 uppercase">${data.time}</span>
-                        ${isMe ? '<i class="fa-solid fa-check-double text-[9px] text-blue-400"></i>' : ''}
-                    </div>
+            const html = `
+                <div class="message-bubble ${isMe ? 'sent' : 'received'}">
+                    ${!isMe ? `<p class="text-[9px] font-bold text-teal-700 uppercase">${data.user}</p>` : ''}
+                    <p class="text-[14px] text-gray-900">${data.text}</p>
+                    <p class="text-[8px] text-gray-500 text-right mt-1">${data.time} ${isMe ? '✓✓' : ''}</p>
                 </div>`;
-            box.innerHTML += msgHtml;
+            box.insertAdjacentHTML('beforeend', html);
             box.scrollTop = box.scrollHeight;
         }
 
         document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
-            </html>
-            
+</html>
