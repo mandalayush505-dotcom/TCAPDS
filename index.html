@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | CENTRAL_SERVER</title>
+    <title>TAIWRC | NOTIFICATION_CORE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono&display=swap');
         .tech-font { font-family: 'Orbitron', sans-serif; }
@@ -20,12 +20,12 @@
 
     <div id="login-box" class="flex flex-col items-center justify-center h-full p-6">
         <div class="w-full max-w-sm glass rounded-2xl p-10 text-center border-b-4 border-red-600">
-            <h1 class="text-4xl font-bold tech-font text-red-600 mb-2">TAIWRC</h1>
-            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase">Central Server v4.0 // Operator: AYUSH</p>
+            <h1 class="text-4xl font-bold tech-font text-red-600 mb-2 tracking-widest">TAIWRC</h1>
+            <p class="text-[8px] mono-font text-slate-500 mb-8 uppercase text-center">PUSH_SERVER v4.2 // OPERATOR: AYUSH</p>
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="UNIT_ID" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500 uppercase">
                 <input id="password" type="password" placeholder="KEY_CODE" class="w-full p-4 rounded-lg bg-black border border-slate-800 outline-none mono-font text-xs text-center text-red-500">
-                <button onclick="login()" class="w-full bg-red-600 py-4 rounded-lg tech-font font-bold text-xs uppercase tracking-widest">Connect to Server</button>
+                <button onclick="login()" class="w-full bg-red-600 py-4 rounded-lg tech-font font-bold text-xs uppercase">Connect & Notify</button>
             </div>
         </div>
     </div>
@@ -33,41 +33,24 @@
     <div id="main-content" class="hidden flex flex-col h-full">
         <header class="p-4 glass border-b border-slate-900 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div id="server-lamp" class="h-2 w-2 bg-red-900 rounded-full"></div>
-                <h2 class="tech-font text-red-600 text-sm">SERVER_LINK: <span id="status-text" class="text-slate-500">OFFLINE</span></h2>
+                <div id="server-lamp" class="h-2 w-2 bg-red-900 rounded-full animate-pulse"></div>
+                <h2 class="tech-font text-red-600 text-[10px]">PUSH_LINK: <span id="status-text">OFFLINE</span></h2>
             </div>
-            <p class="text-[8px] mono-font text-slate-500 uppercase">ID: <span id="user-display">---</span></p>
+            <button onclick="requestNotify()" class="text-[7px] mono-font bg-slate-800 px-2 py-1 rounded text-slate-400 uppercase">Alerts: <span id="notify-status">OFF</span></button>
         </header>
 
         <main class="flex-1 p-4 overflow-y-auto pb-24">
-            
             <section id="tab-chat" class="tab-content flex flex-col h-[75vh]">
                 <div id="chat-box" class="flex-1 overflow-y-auto p-3 space-y-4 border border-slate-900 rounded-xl bg-black/40 mb-4"></div>
                 <div class="flex gap-2">
-                    <input id="chat-input" type="text" placeholder="BROADCAST TO CREW..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-3 text-red-500 mono-font text-[10px] outline-none">
-                    <button onclick="sendMessage()" class="bg-red-600 px-6 rounded-lg text-white"><i class="fa-solid fa-bolt"></i></button>
-                </div>
-            </section>
-
-            <section id="tab-home" class="tab-content hidden space-y-4">
-                <div class="p-4 bg-slate-900/30 border border-slate-800 rounded">
-                    <p class="text-[8px] mono-font text-slate-500 uppercase mb-2">Zone Directives</p>
-                    <p class="text-[10px] mono-font text-slate-300 leading-relaxed">SER/ER/NCR Logic Active. Scale: TBD. Physics: Bernoulli & Traction Analysis Online.</p>
-                </div>
-            </section>
-
-            <section id="tab-projects" class="tab-content hidden space-y-4">
-                <div class="p-4 bg-red-950/20 border border-red-900/30 rounded">
-                    <p class="tech-font text-[9px] text-red-600">H1 COACH [BLUEPRINT]</p>
-                    <p class="mono-font text-[8px] text-slate-500 uppercase">Status: Designing // Scale: TBD</p>
+                    <input id="chat-input" type="text" placeholder="BROADCAST..." class="flex-1 bg-black border border-slate-800 rounded-lg px-4 py-3 text-red-500 mono-font text-[10px] outline-none">
+                    <button onclick="sendMessage()" class="bg-red-600 px-6 rounded-lg text-white"><i class="fa-solid fa-bell"></i></button>
                 </div>
             </section>
         </main>
 
         <nav class="fixed bottom-0 left-0 right-0 glass border-t border-slate-900 py-4 flex justify-around items-center">
-            <button onclick="showTab('chat', this)" class="nav-item nav-active"><i class="fa-solid fa-tower-broadcast"></i></button>
-            <button onclick="showTab('home', this)" class="nav-item text-slate-700"><i class="fa-solid fa-house"></i></button>
-            <button onclick="showTab('projects', this)" class="nav-item text-slate-700"><i class="fa-solid fa-rocket"></i></button>
+            <button onclick="showTab('chat', this)" class="nav-item nav-active px-8"><i class="fa-solid fa-tower-broadcast"></i></button>
         </nav>
     </div>
 
@@ -76,25 +59,47 @@
         let currentUser = "";
         let pubnub;
 
+        function requestNotify() {
+            if (!("Notification" in window)) {
+                alert("This browser does not support notifications.");
+            } else if (Notification.permission === "granted") {
+                document.getElementById('notify-status').innerText = "READY";
+            } else {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") document.getElementById('notify-status').innerText = "READY";
+                });
+            }
+        }
+
         function initPubNub() {
-            // Using Demo keys - these allow real-time chat for anyone using this code
             pubnub = new PubNub({
                 publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                 subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
                 userId: currentUser
             });
 
-            pubnub.subscribe({ channels: ['taiwrc_central_v4'] });
-
+            pubnub.subscribe({ channels: ['taiwrc_notify_v42'] });
             pubnub.addListener({
                 message: (m) => {
-                    renderMessage(m.message);
+                    if (m.publisher !== currentUser) {
+                        renderMessage(m.message, false);
+                        triggerPush(m.message);
+                    }
                 }
             });
 
             document.getElementById('server-lamp').classList.replace('bg-red-900', 'bg-green-500');
             document.getElementById('status-text').innerText = "CONNECTED";
-            document.getElementById('status-text').classList.replace('text-slate-500', 'text-green-500');
+            requestNotify();
+        }
+
+        function triggerPush(data) {
+            if (Notification.permission === "granted") {
+                new Notification(`TAIWRC: ${data.user}`, {
+                    body: data.text,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/702/702797.png'
+                });
+            }
         }
 
         function login() {
@@ -104,49 +109,31 @@
                 currentUser = u.split('-')[0].toUpperCase();
                 document.getElementById('login-box').style.display = 'none';
                 document.getElementById('main-content').classList.remove('hidden');
-                document.getElementById('user-display').innerText = currentUser;
                 initPubNub();
             } else { alert("ACCESS DENIED"); }
         }
 
         function sendMessage() {
             const inp = document.getElementById('chat-input');
-            if(!inp.value.trim()) return;
-
-            pubnub.publish({
-                channel: 'taiwrc_central_v4',
-                message: {
-                    user: currentUser,
-                    text: inp.value.toUpperCase(),
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-            });
+            const text = inp.value.trim();
+            if(!text) return;
+            const msgObj = { user: currentUser, text: text.toUpperCase(), time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+            renderMessage(msgObj, true);
+            pubnub.publish({ channel: 'taiwrc_notify_v42', message: msgObj });
             inp.value = "";
         }
 
-        function renderMessage(data) {
+        function renderMessage(data, isMe) {
             const box = document.getElementById('chat-box');
-            const isMe = data.user === currentUser;
-            const msgHtml = `
-                <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} animate-pulse-once">
-                    <span class="text-[6px] mono-font text-slate-600 mb-1">${data.user} • ${data.time}</span>
-                    <div class="px-3 py-2 rounded-lg text-[10px] mono-font ${isMe ? 'bg-red-600/20 text-red-500 border border-red-600/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}">
-                        ${data.text}
-                    </div>
-                </div>`;
-            box.innerHTML += msgHtml;
+            box.innerHTML += `<div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} mb-4">
+                <span class="text-[6px] mono-font text-slate-600 mb-1">${data.user} • ${data.time}</span>
+                <div class="px-3 py-2 rounded-lg text-[10px] mono-font ${isMe ? 'bg-red-600/20 text-red-400 border border-red-600/30' : 'bg-slate-800 text-slate-300 border border-slate-700'}">${data.text}</div>
+            </div>`;
             box.scrollTop = box.scrollHeight;
-        }
-
-        function showTab(id, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(`tab-${id}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(n => { n.classList.remove('nav-active'); n.classList.add('text-slate-700'); });
-            btn.classList.add('nav-active'); btn.classList.remove('text-slate-700');
         }
 
         document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
     </script>
 </body>
                 </html>
-    
+                
