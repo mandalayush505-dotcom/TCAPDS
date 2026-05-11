@@ -8,79 +8,164 @@
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <title>TAIWRC ENTERPRISE | V8.0</title>
+    <title>TAIWRC MONOLITH v10.0</title>
     
     <style>
+        /* RAW CSS ARCHITECTURE */
         :root {
-            --wa-bg: #efe7de;
-            --wa-teal: #075e54;
-            --wa-teal-light: #128c7e;
-            --wa-bubble-me: #dcf8c6;
-            --wa-bubble-other: #ffffff;
+            --wa-green: #25D366;
+            --wa-teal: #075E54;
+            --wa-teal-light: #128C7E;
+            --wa-bg-chat: #E5DDD5;
+            --wa-bubble-sent: #DCF8C6;
+            --wa-bubble-received: #FFFFFF;
         }
 
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--wa-bg); overflow: hidden; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            height: 100dvh; 
+            font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            background-color: var(--wa-bg-chat); 
+            display: flex; 
+            flex-direction: column; 
+            overflow: hidden; 
+        }
 
-        /* UI SERVICE: LAYOUT */
-        .app-shell { display: flex; flex-direction: column; height: 100dvh; }
-        
-        .app-header { background: var(--wa-teal); color: white; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 10; }
-        
-        .chat-viewport { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-attachment: fixed; }
+        /* HEADER MODULE */
+        header.application-top-bar {
+            background-color: var(--wa-teal);
+            height: 60px;
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
 
-        /* COMPONENT: MESSAGE BUBBLES */
-        .msg-container { display: flex; flex-direction: column; max-width: 85%; padding: 6px 10px; border-radius: 8px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
-        .msg-me { align-self: flex-end; background: var(--wa-bubble-me); border-top-right-radius: 0; }
-        .msg-other { align-self: flex-start; background: var(--wa-bubble-other); border-top-left-radius: 0; }
-        
-        .sender-label { font-size: 11px; font-weight: 700; margin-bottom: 2px; }
-        .text-content { font-size: 14.5px; color: #111; line-height: 1.4; }
-        .msg-timestamp { font-size: 10px; color: #888; text-align: right; margin-top: 4px; display: block; }
+        /* VIEWPORT MODULE */
+        main.chat-display-engine {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-repeat: repeat;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
 
-        /* COMPONENT: INPUT CONTROLLER */
-        .input-area { background: #f0f0f0; padding: 8px 12px; display: flex; align-items: center; gap: 10px; border-top: 1px solid #ddd; }
-        .input-field-wrapper { flex: 1; background: white; border-radius: 24px; padding: 10px 16px; display: flex; align-items: center; }
-        .input-field-wrapper input { border: none; outline: none; width: 100%; font-size: 15px; }
-        
-        .action-btn { background: var(--wa-teal-light); color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; items-center: center; justify-content: center; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        /* MESSAGE OBJECT UI */
+        .message-object {
+            max-width: 85%;
+            padding: 8px 12px;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 1px 0.5px rgba(0,0,0,0.13);
+            font-size: 14.5px;
+            line-height: 1.4;
+        }
 
-        /* SYSTEM: MODALS */
-        #auth-service-overlay { position: fixed; inset: 0; background: var(--wa-teal); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: white; padding: 40px; border-radius: 12px; width: 90%; max-width: 380px; text-align: center; }
+        .message-object.is-sent {
+            align-self: flex-end;
+            background-color: var(--wa-bubble-sent);
+            border-top-right-radius: 0;
+        }
+
+        .message-object.is-received {
+            align-self: flex-start;
+            background-color: var(--wa-bubble-received);
+            border-top-left-radius: 0;
+        }
+
+        .message-metadata {
+            font-size: 10px;
+            color: #666;
+            text-align: right;
+            margin-top: 4px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* INPUT MODULE */
+        footer.control-bar {
+            background-color: #F0F0F0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid #D1D1D1;
+        }
+
+        .input-text-node {
+            flex: 1;
+            background: white;
+            border-radius: 25px;
+            padding: 10px 18px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .broadcast-button-node {
+            background-color: var(--wa-teal-light);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        /* SECURITY OVERLAY */
+        #security-handshake-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--wa-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-service-overlay">
-        <div class="auth-card">
-            <h2 class="text-2xl font-bold text-teal-800 mb-8">TAIWRC ENTERPRISE</h2>
+    <section id="security-handshake-screen">
+        <div class="bg-white p-10 rounded-xl shadow-2xl w-[90%] max-w-[400px]">
+            <h2 class="text-center font-bold text-2xl text-teal-900 mb-8 uppercase tracking-widest">TAIWRC V10.0</h2>
             <div class="space-y-4">
-                <input id="auth-uid" type="text" placeholder="ACCOUNT ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase text-center font-mono">
-                <input id="auth-key" type="password" placeholder="SECURITY KEY" class="w-full p-3 border-b-2 border-teal-600 outline-none text-center">
-                <button onclick="SystemBootstrap.validate()" class="w-full bg-teal-700 text-white py-4 rounded font-bold uppercase tracking-widest mt-4">Initialize Session</button>
+                <input id="user-identity-input" type="text" placeholder="IDENTITY ID" class="w-full p-4 border-b-2 border-teal-600 outline-none text-center font-bold uppercase">
+                <input id="user-key-input" type="password" placeholder="SECURITY KEY" class="w-full p-4 border-b-2 border-teal-600 outline-none text-center">
+                <button id="initiate-session-btn" class="w-full bg-teal-700 text-white py-4 rounded font-black uppercase tracking-widest mt-6">Mount Monolith</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="app-root" class="hidden app-shell">
-        <header class="app-header">
+    <div id="main-application-shell" class="hidden flex flex-col h-full">
+        <header class="application-top-bar">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"><i class="fa-solid fa-microchip"></i></div>
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center border border-white/10"><i class="fa-solid fa-server"></i></div>
                 <div>
-                    <h1 class="font-bold text-sm">TAIWRC | SER-SCR HUB</h1>
-                    <p id="system-status" class="text-[10px] text-red-300 font-bold uppercase italic">Syncing...</p>
+                    <h1 class="font-bold text-sm leading-none">TAIWRC HUB</h1>
+                    <p id="network-connection-status" class="text-[10px] text-red-300 font-bold uppercase mt-1">Initializing Handshake...</p>
                 </div>
             </div>
-            <div id="session-badge" class="text-[10px] opacity-70 border border-white/30 px-2 py-1 rounded">---</div>
+            <div id="active-session-label" class="text-[10px] bg-black/20 px-3 py-1 rounded font-mono border border-white/20">---</div>
         </header>
 
-        <main id="chat-viewport" class="chat-viewport"></main>
+        <main id="chat-engine-viewport" class="chat-display-engine"></main>
 
-        <footer class="input-area">
-            <div class="input-field-wrapper">
-                <input id="message-input-node" type="text" placeholder="Type transmission..." autocomplete="off">
-            </div>
-            <button onclick="SystemBootstrap.processOutbound()" class="action-btn">
+        <footer class="control-bar">
+            <input id="message-text-node" type="text" placeholder="Type a message" class="input-text-node">
+            <button id="send-broadcast-node" class="broadcast-button-node">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </footer>
@@ -88,125 +173,153 @@
 
     <script>
         /**
-         * SystemBootstrap: The Core Controller
-         * Implements Singleton pattern to manage application state.
+         * TAIWRC MONOLITHIC CORE ENGINE
+         * An unoptimized, modular implementation of a real-time communication terminal.
          */
-        const SystemBootstrap = {
-            registry: {
-                "Debpratim-debukakawap5": "debu-wap5brc",
-                "ayushwap7": "wap7clw",
-                "sarthababawag9": "wag9clw"
-            },
-            
-            themeRegistry: {
-                "DEBPRATIM": "#C62828",
-                "SARTHAK": "#1565C0",
-                "AYUSH": "#2E7D32"
-            },
+        class TaiwrcApplication {
+            constructor() {
+                this.credentialsRegistry = {
+                    "Debpratim-debukakawap5": "debu-wap5brc",
+                    "ayushwap7": "wap7clw",
+                    "sarthababawag9": "wag9clw"
+                };
 
-            state: {
-                currentUser: null,
-                socket: null,
-                channel: "taiwrc_industrial_v8"
-            },
+                this.userColorRegistry = {
+                    "DEBPRATIM": "#D32F2F",
+                    "SARTHAK": "#1976D2",
+                    "AYUSH": "#388E3C"
+                };
 
-            validate: function() {
-                const uid = document.getElementById('auth-uid').value.trim();
-                const key = document.getElementById('auth-key').value.trim();
+                this.sessionState = {
+                    currentUserIdentity: null,
+                    networkInterface: null,
+                    primaryChannel: "taiwrc_monolith_v10"
+                };
 
-                if (this.registry[uid] === key) {
-                    this.state.currentUser = uid.split('-')[0].toUpperCase();
-                    this.startup();
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                document.getElementById('initiate-session-btn').addEventListener('click', () => this.handleAuthentication());
+                document.getElementById('send-broadcast-node').addEventListener('click', () => this.handleOutboundTransmission());
+                document.getElementById('message-text-node').addEventListener('keypress', (event) => {
+                    if (event.key === 'Enter') this.handleOutboundTransmission();
+                });
+            }
+
+            handleAuthentication() {
+                const identity = document.getElementById('user-identity-input').value.trim();
+                const key = document.getElementById('user-key-input').value.trim();
+
+                if (this.credentialsRegistry[identity] === key) {
+                    this.sessionState.currentUserIdentity = identity.split('-')[0].toUpperCase();
+                    this.bootSequence();
                 } else {
-                    alert("PROTOCOL ERROR: INVALID CREDENTIALS");
+                    alert("SECURITY ERROR: AUTHENTICATION DENIED");
                 }
-            },
+            }
 
-            startup: function() {
-                document.getElementById('auth-service-overlay').style.display = 'none';
-                document.getElementById('app-root').classList.remove('hidden');
-                document.getElementById('session-badge').innerText = this.state.currentUser;
-                
-                this.mountSocket();
-            },
+            bootSequence() {
+                document.getElementById('security-handshake-screen').style.display = 'none';
+                document.getElementById('main-application-shell').classList.remove('hidden');
+                document.getElementById('active-session-label').innerText = this.sessionState.currentUserIdentity;
 
-            mountSocket: function() {
-                const statusNode = document.getElementById('system-status');
-                
-                this.state.socket = new PubNub({
+                this.initializeNetworkService();
+            }
+
+            initializeNetworkService() {
+                const statusLabel = document.getElementById('network-connection-status');
+
+                this.sessionState.networkInterface = new PubNub({
                     publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                     subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                    userId: this.state.currentUser + "_" + Math.floor(Math.random() * 100000),
+                    userId: this.sessionState.currentUserIdentity + "_" + Math.random().toString(36).substring(7),
                     ssl: true,
                     heartbeatInterval: 10
                 });
 
-                this.state.socket.subscribe({ channels: [this.state.channel] });
+                this.sessionState.networkInterface.subscribe({ 
+                    channels: [this.sessionState.primaryChannel],
+                    withPresence: true
+                });
 
-                this.state.socket.addListener({
-                    status: (s) => {
-                        if (s.category === "PNConnectedCategory") {
-                            statusNode.innerText = "system online";
-                            statusNode.style.color = "#4ade80";
+                // FETCH HISTORICAL DATA (Persistence Service)
+                this.sessionState.networkInterface.fetchMessages({
+                    channels: [this.sessionState.primaryChannel],
+                    count: 100
+                }, (status, response) => {
+                    if (response && response.channels[this.sessionState.primaryChannel]) {
+                        response.channels[this.sessionState.primaryChannel].forEach(historyItem => {
+                            const isOwn = historyItem.message.senderID === this.sessionState.currentUserIdentity;
+                            this.renderMessageNode(historyItem.message, isOwn);
+                        });
+                    }
+                });
+
+                this.sessionState.networkInterface.addListener({
+                    status: (statusEvent) => {
+                        if (statusEvent.category === "PNConnectedCategory") {
+                            statusLabel.innerText = "connected to hub";
+                            statusLabel.classList.replace('text-red-300', 'text-green-400');
                         }
                     },
-                    message: (payload) => {
-                        // Data Sync Logic: Filter self-broadcast
-                        if (payload.message.origin !== this.state.currentUser) {
-                            this.renderNode(payload.message, false);
+                    message: (messagePayload) => {
+                        // Filter Logic: Ensure we don't render our own broadcast twice
+                        if (messagePayload.message.senderID !== this.sessionState.currentUserIdentity) {
+                            this.renderMessageNode(messagePayload.message, false);
                         }
                     }
                 });
-            },
+            }
 
-            processOutbound: function() {
-                const inputNode = document.getElementById('message-input-node');
+            handleOutboundTransmission() {
+                const inputNode = document.getElementById('message-text-node');
                 const content = inputNode.value.trim();
 
                 if (!content) return;
 
-                // Construct Message Object (Industrial Specification)
-                const messageObject = {
-                    origin: this.state.currentUser,
-                    data: content,
+                const dataPacket = {
+                    senderID: this.sessionState.currentUserIdentity,
+                    body: content,
                     timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
-                    checksum: Math.random().toString(36).substring(7)
+                    checksum: Date.now()
                 };
 
-                // Internal State Update (Local Echo)
-                this.renderNode(messageObject, true);
+                // Local UI Update (Instant Feedback)
+                this.renderMessageNode(dataPacket, true);
 
-                // External Broadcast
-                this.state.socket.publish({
-                    channel: this.state.channel,
-                    message: messageObject
+                // Network Broadcast
+                this.sessionState.networkInterface.publish({
+                    channel: this.sessionState.primaryChannel,
+                    message: dataPacket
                 });
 
                 inputNode.value = "";
-            },
+            }
 
-            renderNode: function(msg, isLocal) {
-                const viewport = document.getElementById('chat-viewport');
-                const color = this.themeRegistry[msg.origin] || "#000";
+            renderMessageNode(packet, isSelf) {
+                const viewport = document.getElementById('chat-engine-viewport');
+                const senderColor = this.userColorRegistry[packet.senderID] || "#000";
                 
-                const wrapper = document.createElement('div');
-                wrapper.className = `msg-container ${isLocal ? 'msg-me' : 'msg-other'}`;
+                const nodeContainer = document.createElement('div');
+                nodeContainer.className = `message-object ${isSelf ? 'is-sent' : 'is-received'}`;
                 
-                wrapper.innerHTML = `
-                    ${!isLocal ? `<span class="sender-label" style="color:${color}">${msg.origin}</span>` : ''}
-                    <div class="text-content">${msg.data}</div>
-                    <span class="msg-timestamp">${msg.timestamp} ${isLocal ? '<i class="fa-solid fa-check-double text-blue-400"></i>' : ''}</span>
+                nodeContainer.innerHTML = `
+                    ${!isSelf ? `<span class="font-bold text-[11px] uppercase mb-1 block" style="color:${senderColor}">${packet.senderID}</span>` : ''}
+                    <div class="message-text-content">${packet.body}</div>
+                    <div class="message-metadata">
+                        <span>${packet.timestamp}</span>
+                        ${isSelf ? '<i class="fa-solid fa-check-double text-blue-400"></i>' : ''}
+                    </div>
                 `;
 
-                viewport.appendChild(wrapper);
+                viewport.appendChild(nodeContainer);
                 viewport.scrollTop = viewport.scrollHeight;
             }
-        };
+        }
 
-        // Event Listeners
-        document.getElementById('message-input-node').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') SystemBootstrap.processOutbound();
-        });
+        // MOUNT THE APPLICATION
+        const TAIWRC_APP = new TaiwrcApplication();
     </script>
 </body>
 </html>
