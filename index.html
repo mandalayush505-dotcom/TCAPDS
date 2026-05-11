@@ -2,208 +2,228 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAIWRC AETHER | INDUSTRIAL v167</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TITAN COLOSSUS | SOVEREIGN v169.0</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        /* I. SYSTEM ARCHITECTURE & TOKENS */
         :root { 
-            --ae-teal: #075e54; --ae-dark: #128c7e; --ae-bg: #efe7de; 
-            --ae-sent: #dcf8c6; --ae-recv: #ffffff;
+            --titan-teal: #075e54; --titan-dark: #128c7e; --titan-bg: #efe7de; 
+            --node-sent: #dcf8c6; --node-recv: #ffffff;
+            --system-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            --transition-main: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        /* 1. PC FRAMEWORK OPTIMIZATION */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--ae-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        /* II. PC VIEWPORT FRAMEWORK */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; scrollbar-width: thin; }
+        body { font-family: 'Segoe UI', 'Roboto', sans-serif; background: var(--titan-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* 2. THE AETHER VIEWPORT (WIDE PC ADAPTATION) */
-        #aether-view {
-            flex: 1; overflow-y: auto; padding: 50px 25%; display: flex; flex-direction: column; gap: 18px;
+        /* III. THE DATASTREAM (VIEWPORT) */
+        #datastream {
+            flex: 1; overflow-y: auto; padding: 60px 28%; display: flex; flex-direction: column; gap: 20px;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-size: 600px; scroll-behavior: smooth;
         }
 
-        /* 3. HARD-RENDERED MESSAGE NODES */
+        /* IV. COLOSSUS PACKET MODULES */
         .packet {
-            max-width: 75%; padding: 15px 22px; border-radius: 18px; font-size: 15.5px; 
-            position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            animation: aetherRise 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            line-height: 1.6; border: 1px solid rgba(0,0,0,0.05);
+            max-width: 80%; padding: 16px 24px; border-radius: 20px; font-size: 16px; 
+            position: relative; box-shadow: var(--system-shadow);
+            animation: packetArrival 0.5s var(--transition-main);
+            line-height: 1.6; word-wrap: break-word; border: 1px solid rgba(0,0,0,0.04);
         }
-        @keyframes aetherRise { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes packetArrival { from { opacity: 0; transform: translateY(40px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        .sent { align-self: flex-end; background: var(--ae-sent); border-top-right-radius: 4px; }
-        .recv { align-self: flex-start; background: var(--ae-recv); border-top-left-radius: 4px; }
+        .sent { align-self: flex-end; background: var(--node-sent); border-top-right-radius: 4px; }
+        .recv { align-self: flex-start; background: var(--node-recv); border-top-left-radius: 4px; }
 
-        /* 4. INDUSTRIAL HEADER */
-        header { background: var(--ae-teal); color: white; padding: 25px 25%; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .status-hub { display: flex; align-items: center; gap: 15px; }
-        .orb { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.3); }
-        .live { background: #25d366; box-shadow: 0 0 15px #25d366; }
-        .dead { background: #ff3b30; box-shadow: 0 0 15px #ff3b30; animation: search 1s infinite alternate; }
-        @keyframes search { from { opacity: 1; } to { opacity: 0.3; } }
+        /* V. COMMAND CENTER (HEADER) */
+        header { background: var(--titan-teal); color: white; padding: 30px 28%; display: flex; justify-content: space-between; align-items: center; z-index: 9999; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+        .orb { width: 16px; height: 16px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); transition: 0.3s; }
+        .active { background: #25d366; box-shadow: 0 0 20px #25d366; }
+        .blocked { background: #ff3b30; animation: alarm 0.8s infinite alternate; }
+        @keyframes alarm { from { opacity: 1; scale: 1; } to { opacity: 0.4; scale: 1.2; } }
 
-        /* 5. DATA CONSOLE */
-        footer { background: #f0f2f5; padding: 25px 25%; display: flex; align-items: center; gap: 20px; border-top: 1px solid #d1d7db; }
-        .input-shell { flex: 1; background: white; border-radius: 40px; padding: 16px 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        input { width: 100%; border: none; outline: none; font-size: 16px; background: transparent; }
-        .btn-transmit { background: var(--ae-dark); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 15px rgba(0,0,0,0.2); transition: 0.2s; cursor: pointer; }
-        .btn-transmit:active { transform: scale(0.9); }
+        /* VI. INPUT CHASSIS (FOOTER) */
+        footer { background: #f0f2f5; padding: 30px 28%; display: flex; align-items: center; gap: 25px; border-top: 1px solid #d1d7db; }
+        .console-chassis { flex: 1; background: white; border-radius: 45px; padding: 18px 35px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.06); }
+        input { width: 100%; border: none; outline: none; font-size: 17px; background: transparent; color: #111b21; }
+        .btn-ignite { background: var(--titan-dark); color: white; width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: 0.2s; cursor: pointer; }
+        .btn-ignite:active { transform: scale(0.8); background: #075e54; }
 
-        /* 6. SECURITY OVERLAY */
-        #vault { position: fixed; inset: 0; background: var(--ae-teal); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .vault-card { background: white; padding: 70px 60px; border-radius: 60px; width: 100%; max-width: 580px; text-align: center; box-shadow: 0 50px 100px rgba(0,0,0,0.5); }
+        /* VII. SOVEREIGN GATEWAY */
+        #gateway { position: fixed; inset: 0; background: var(--titan-teal); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .colossus-card { background: white; padding: 80px 60px; border-radius: 70px; width: 100%; max-width: 620px; text-align: center; box-shadow: 0 60px 150px rgba(0,0,0,0.7); }
     </style>
 </head>
 <body>
 
-    <div id="vault">
-        <div class="vault-card">
-            <h1 class="text-6xl font-black text-teal-950 mb-3 italic tracking-tighter">AETHER</h1>
-            <p class="text-[11px] tracking-[0.6em] text-teal-600 font-bold mb-16 uppercase">Data-Sync Engine v167.0</p>
-            <div class="space-y-6">
-                <input id="u-id" type="text" placeholder="TERMINAL ID" class="w-full p-6 bg-gray-100 rounded-3xl outline-none text-center font-black uppercase border-2 border-transparent focus:border-teal-500 transition-all text-xl">
-                <input id="p-key" type="password" placeholder="SECRET KEY" class="w-full p-6 bg-gray-100 rounded-3xl outline-none text-center border-2 border-transparent focus:border-teal-500 transition-all text-xl">
-                <button onclick="Aether.boot()" class="w-full bg-teal-900 text-white py-6 rounded-3xl font-black uppercase tracking-widest shadow-2xl hover:bg-teal-800 active:scale-95 transition-all">Establish Aether Link</button>
+    <div id="gateway">
+        <div class="colossus-card">
+            <h1 class="text-7xl font-black text-teal-950 mb-4 italic tracking-tighter">COLOSSUS</h1>
+            <p class="text-[13px] tracking-[0.7em] text-teal-600 font-bold mb-20 uppercase">Sovereign Node v169.0</p>
+            <div class="space-y-7">
+                <input id="u-auth" type="text" placeholder="TERMINAL IDENTITY" class="w-full p-6 bg-gray-100 rounded-[30px] outline-none text-center font-black uppercase border-2 border-transparent focus:border-teal-500 transition-all text-2xl">
+                <input id="p-auth" type="password" placeholder="SECURITY KEY" class="w-full p-6 bg-gray-100 rounded-[30px] outline-none text-center border-2 border-transparent focus:border-teal-500 transition-all text-2xl">
+                <button onclick="Colossus.ignite()" class="w-full bg-teal-900 text-white py-7 rounded-[30px] font-black uppercase tracking-[0.3em] shadow-2xl hover:bg-teal-800 active:scale-95 transition-all">Establish Link</button>
             </div>
         </div>
     </div>
 
-    <div id="ui-shell" class="hidden h-full flex flex-col">
+    <div id="colossus-shell" class="hidden h-full flex flex-col">
         <header>
-            <div class="status-hub">
-                <div id="status-orb" class="orb dead"></div>
+            <div class="flex items-center gap-7">
+                <div id="status-orb" class="orb blocked"></div>
                 <div>
-                    <h2 class="text-sm font-black uppercase tracking-widest">Mainframe Link</h2>
-                    <p id="status-txt" class="text-[10px] opacity-80 font-bold uppercase">Probing Aether...</p>
+                    <h2 class="text-base font-black uppercase tracking-[0.2em]">Sovereign Mainframe</h2>
+                    <p id="status-msg" class="text-[11px] opacity-80 font-bold uppercase">Probing Meshing Gaps...</p>
                 </div>
             </div>
-            <div id="id-badge" class="text-[11px] font-mono bg-black/25 px-6 py-3 rounded-2xl border border-white/20 uppercase font-black italic">---</div>
+            <div id="id-tag" class="text-[12px] font-mono bg-black/30 px-7 py-4 rounded-3xl border border-white/20 uppercase font-black italic tracking-widest">---</div>
         </header>
 
-        <main id="aether-view"></main>
+        <main id="datastream"></main>
 
         <footer>
-            <div class="input-shell"><input id="data-in" type="text" placeholder="Transmit high-priority packet..." autocomplete="off"></div>
-            <button onclick="Aether.transmit()" class="btn-transmit"><i class="fa-solid fa-paper-plane text-2xl"></i></button>
+            <div class="console-chassis"><input id="cmd-input" type="text" placeholder="Transmit high-priority data packet..." autocomplete="off"></div>
+            <button onclick="Colossus.transmit()" class="btn-ignite"><i class="fa-solid fa-paper-plane text-3xl"></i></button>
         </footer>
     </div>
 
     <script>
         /**
-         * AETHER ENGINE v167.0
-         * Multi-Layered Industrial Architecture
+         * TITAN COLOSSUS ENGINE v169.0
+         * Modular Sovereign Communication Framework
          */
-        const Aether = {
-            db: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
-            colors: { "DEBPRATIM": "#b71c1c", "SARTHAK": "#0d47a1", "AYUSH": "#1b5e20" },
-            
-            me: "", client: null, topic: "taiwrc/v167/aether/final",
-            ports: [443, 8000, 8883], pIdx: 0,
-            
-            boot() {
-                const u = document.getElementById('u-id').value.trim();
-                const k = document.getElementById('p-key').value.trim();
-                if (this.db[u] === k) {
-                    this.me = u.split('-')[0].toUpperCase();
-                    document.getElementById('vault').remove();
-                    document.getElementById('ui-shell').classList.remove('hidden');
-                    document.getElementById('id-badge').innerText = this.me;
-                    this.load();
-                    this.connect();
-                } else { alert("ACCESS DENIED"); }
+        const Colossus = {
+            // MODULE I: DATA REGISTRY
+            registry: {
+                u: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
+                c: { "DEBPRATIM": "#b71c1c", "SARTHAK": "#0d47a1", "AYUSH": "#1b5e20" },
+                p: [443, 8000, 8883]
             },
 
-            connect() {
-                const port = this.ports[this.pIdx];
-                const cid = "AE_NODE_" + this.me + "_" + Math.floor(Math.random() * 99999);
-                this.client = new Paho.MQTT.Client("broker.hivemq.com", port, cid);
+            // MODULE II: STATE ENGINE
+            state: {
+                id: "", client: null, pIdx: 0, live: false, 
+                queue: [], historyLimit: 1000
+            },
 
-                this.client.onConnectionLost = () => {
-                    this.syncUI(false, "RE-ROUTING DATA GAPS");
-                    this.pIdx = (this.pIdx + 1) % this.ports.length;
+            // MODULE III: IGNITION SEQUENCE
+            ignite() {
+                const u = document.getElementById('u-auth').value.trim();
+                const k = document.getElementById('p-auth').value.trim();
+                if (this.registry.u[u] === k) {
+                    this.state.id = u.split('-')[0].toUpperCase();
+                    document.getElementById('gateway').remove();
+                    document.getElementById('colossus-shell').classList.remove('hidden');
+                    document.getElementById('id-tag').innerText = this.state.id;
+                    this.syncStorage();
+                    this.connect();
+                } else { alert("SOVEREIGN ERROR: ACCESS DENIED"); }
+            },
+
+            // MODULE IV: NETWORK MESHING
+            connect() {
+                const port = this.registry.p[this.state.pIdx];
+                const cid = `COLOSSUS_NODE_${this.state.id}_${Math.random().toString(36).substr(2, 9)}`;
+                this.state.client = new Paho.MQTT.Client("broker.hivemq.com", port, cid);
+
+                this.state.client.onConnectionLost = (e) => {
+                    this.updateUI(false, "RE-ROUTING DATA GAPS");
+                    this.state.pIdx = (this.state.pIdx + 1) % this.registry.p.length;
                     setTimeout(() => this.connect(), 2000);
                 };
 
-                this.client.onMessageArrived = (m) => {
+                this.state.client.onMessageArrived = (m) => {
                     const d = JSON.parse(m.payloadString);
-                    if (d.s !== this.me) this.render(d, false, true);
+                    if (d.s !== this.state.id) this.render(d, false, true);
                 };
 
-                this.client.connect({
+                this.state.client.connect({
                     onSuccess: () => {
-                        this.syncUI(true, "ACTIVE ON PORT " + port);
-                        this.client.subscribe(this.topic);
+                        this.updateUI(true, `SECURE LINK: PORT ${port} STABLE`);
+                        this.state.client.subscribe("taiwrc/v169/colossus/final");
                     },
                     onFailure: () => {
-                        this.pIdx = (this.pIdx + 1) % this.ports.length;
+                        this.state.pIdx = (this.state.pIdx + 1) % this.registry.p.length;
                         setTimeout(() => this.connect(), 1000);
                     },
                     useSSL: (port === 443),
-                    timeout: 5, keepAliveInterval: 30, cleanSession: false
+                    timeout: 8, keepAliveInterval: 60, cleanSession: false
                 });
             },
 
-            syncUI(on, txt) {
-                document.getElementById('status-orb').className = on ? "orb live" : "orb dead";
-                document.getElementById('status-txt').innerText = txt;
+            updateUI(on, txt) {
+                this.state.live = on;
+                document.getElementById('status-orb').className = on ? "orb active" : "orb blocked";
+                document.getElementById('status-msg').innerText = txt;
             },
 
+            // MODULE V: ASYNC TRANSMISSION ENGINE
             transmit() {
-                const i = document.getElementById('data-in');
-                const v = i.value.trim();
-                if (!v || !this.client) return;
+                const input = document.getElementById('cmd-input');
+                const val = input.value.trim();
+                if (!val) return;
 
-                const p = { 
-                    s: this.me, t: v, id: "PKT-" + Date.now(), 
+                const packet = { 
+                    s: this.state.id, t: val, uuid: "PKT-" + Date.now() + Math.random().toString(36).substr(2, 4),
                     time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) 
                 };
 
-                // IMMEDIATE UI RENDER
-                this.render(p, true, true);
+                // STEP 1: ZERO-LATENCY UI UPDATE
+                this.render(packet, true, true);
                 
-                // BACKEND BROADCAST
-                const m = new Paho.MQTT.Message(JSON.stringify(p));
-                m.destinationName = this.topic;
-                m.retained = true;
-                this.client.send(m);
-                i.value = "";
+                // STEP 2: INSTANT INPUT CLEAR
+                input.value = "";
+
+                // STEP 3: ASYNC BACKEND BROADCAST
+                if (this.state.live && this.state.client) {
+                    const m = new Paho.MQTT.Message(JSON.stringify(packet));
+                    m.destinationName = "taiwrc/v169/colossus/final";
+                    m.retained = true;
+                    this.state.client.send(m);
+                }
             },
 
+            // MODULE VI: UI RENDERING LOGIC
             render(d, isMe, save) {
-                if (document.getElementById(d.id)) return;
-                const view = document.getElementById('aether-view');
+                if (document.getElementById(d.uuid)) return;
+                const view = document.getElementById('datastream');
                 const div = document.createElement('div');
-                div.id = d.id;
+                div.id = d.uuid;
                 div.className = `packet ${isMe ? 'sent' : 'recv'}`;
                 div.innerHTML = `
-                    <span class="text-[11px] font-black uppercase mb-1 block" style="color:${this.colors[d.s] || '#444'}">${!isMe ? d.s : ''}</span>
-                    <div>${d.t}</div>
-                    <div class="text-[10px] text-gray-500 text-right mt-1">${d.time} ${isMe ? '✓✓' : ''}</div>`;
+                    <span class="text-[12px] font-black uppercase mb-1 block" style="color:${this.registry.c[d.s] || '#444'}">${!isMe ? d.s : ''}</span>
+                    <div class="leading-relaxed">${d.t}</div>
+                    <div class="text-[10px] text-gray-500 text-right mt-2 font-bold">${d.time} ${isMe ? '✓✓' : ''}</div>`;
                 view.appendChild(div);
                 view.scrollTop = view.scrollHeight;
                 if (save) this.saveToDisk(d);
             },
 
+            // MODULE VII: DISK PERSISTENCE
             saveToDisk(p) {
-                let a = JSON.parse(localStorage.getItem('aether_cache') || '[]');
-                if (!a.some(x => x.id === p.id)) {
+                let a = JSON.parse(localStorage.getItem('colossus_archive') || '[]');
+                if (!a.some(x => x.uuid === p.uuid)) {
                     a.push(p);
-                    if (a.length > 500) a.shift();
-                    localStorage.setItem('aether_cache', JSON.stringify(a));
+                    if (a.length > this.state.historyLimit) a.shift();
+                    localStorage.setItem('colossus_archive', JSON.stringify(a));
                 }
             },
 
-            load() {
-                const a = JSON.parse(localStorage.getItem('aether_cache') || '[]');
-                a.forEach(p => this.render(p, p.s === this.me, false));
+            syncStorage() {
+                const a = JSON.parse(localStorage.getItem('colossus_archive') || '[]');
+                a.forEach(p => this.render(p, p.s === this.state.id, false));
             }
         };
 
-        document.getElementById('data-in').addEventListener('keypress', (e) => { if(e.key === 'Enter') Aether.transmit(); });
+        // EVENT HOOKS
+        document.getElementById('cmd-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') Colossus.transmit(); });
     </script>
 </body>
 </html>
