@@ -6,56 +6,42 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC TURBO | v13.0</title>
+    <title>TAIWRC HYPER | v14.0</title>
     <style>
-        /* INDUSTRIAL CSS VARIABLES - NO OPTIMIZATION */
-        :root { --wa-teal: #075e54; --wa-bg: #e5ddd5; --wa-me: #dcf8c6; --wa-them: #ffffff; }
-        
-        body { margin: 0; background: var(--wa-bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        
-        /* THE VIEWPORT ENGINE */
-        #viewport { flex: 1; overflow-y: scroll; padding: 15px; display: flex; flex-direction: column; gap: 8px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); overscroll-behavior: contain; }
-        
-        /* MESSAGE OBJECT ARCHITECTURE */
-        .msg-obj { max-width: 85%; padding: 7px 11px; border-radius: 9px; font-size: 14.5px; line-height: 1.4; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); position: relative; transition: opacity 0.2s ease-in; }
-        .is-me { align-self: flex-end; background: var(--wa-me); border-top-right-radius: 0; }
-        .is-them { align-self: flex-start; background: var(--wa-them); border-top-left-radius: 0; }
-        
-        .sender-id { font-size: 11px; font-weight: 800; margin-bottom: 2px; display: block; text-transform: uppercase; }
-        .meta { font-size: 10px; color: #777; text-align: right; margin-top: 3px; display: flex; justify-content: flex-end; align-items: center; gap: 4px; }
-
-        /* INPUT CONTROLLER */
-        .input-tray { background: #f0f0f0; padding: 9px; display: flex; items-center: center; gap: 8px; border-top: 1px solid #ddd; }
-        .field { flex: 1; background: white; border-radius: 25px; padding: 10px 18px; outline: none; font-size: 15px; border: none; }
-        
-        #gatekeeper { position: fixed; inset: 0; z-index: 10000; background: var(--wa-teal); display: flex; align-items: center; justify-content: center; }
+        :root { --wa-teal: #075e54; --wa-bg: #e5ddd5; }
+        body { margin:0; background:var(--wa-bg); height:100dvh; display:flex; flex-direction:column; overflow:hidden; font-family:'Segoe UI', sans-serif; }
+        #view { flex:1; overflow-y:scroll; padding:15px; display:flex; flex-direction:column; gap:8px; background-image:url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); overscroll-behavior:contain; }
+        .bubble { max-width:85%; padding:7px 11px; border-radius:9px; font-size:14.5px; line-height:1.4; box-shadow:0 1px 0.5px rgba(0,0,0,0.13); position:relative; }
+        .sent { align-self:flex-end; background:#dcf8c6; border-top-right-radius:0; }
+        .recv { align-self:flex-start; background:#ffffff; border-top-left-radius:0; }
+        .id-label { font-size:11px; font-weight:800; margin-bottom:2px; display:block; text-transform:uppercase; }
+        .time { font-size:10px; color:#777; text-align:right; margin-top:3px; display:flex; justify-content:flex-end; align-items:center; gap:4px; }
+        #gate { position:fixed; inset:0; z-index:10000; background:var(--wa-teal); display:flex; align-items:center; justify-content:center; }
     </style>
 </head>
 <body>
 
-    <section id="gatekeeper">
+    <section id="gate">
         <div class="bg-white p-10 rounded-3xl w-full max-w-sm shadow-2xl m-4 text-center">
-            <h1 class="text-2xl font-black text-teal-950 mb-8 uppercase italic">TAIWRC TURBO</h1>
-            <input id="u" type="text" placeholder="IDENTITY" class="w-full p-4 border-b-2 border-teal-600 outline-none uppercase font-bold mb-4 text-center">
-            <input id="k" type="password" placeholder="KEY" class="w-full p-4 border-b-2 border-teal-600 outline-none text-center mb-6">
-            <button onclick="TurboEngine.start()" class="w-full bg-teal-700 text-white py-4 rounded-2xl font-black shadow-xl active:scale-95 transition-all">MOUNT CORE</button>
+            <h1 class="text-2xl font-black text-teal-950 mb-8 uppercase italic">HYPER CORE v14</h1>
+            <input id="u-field" type="text" placeholder="IDENTITY" class="w-full p-4 border-b-2 border-teal-600 outline-none uppercase font-bold mb-4 text-center">
+            <input id="k-field" type="password" placeholder="KEY" class="w-full p-4 border-b-2 border-teal-600 outline-none text-center mb-6">
+            <button onclick="Engine.mount()" class="w-full bg-teal-700 text-white py-4 rounded-2xl font-black shadow-xl">ACTIVATE</button>
         </div>
     </section>
 
-    <div id="main-ui" class="hidden h-full flex flex-col">
-        <header class="bg-[#075E54] p-4 text-white flex justify-between items-center shadow-lg z-10">
+    <div id="ui" class="hidden h-full flex flex-col">
+        <header class="bg-[#075E54] p-4 text-white flex justify-between items-center shadow-lg">
             <div class="flex items-center gap-3">
-                <div id="led" class="w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse"></div>
-                <h2 class="font-black text-xs tracking-widest">SER-SCR HUB V13</h2>
+                <div id="led" class="w-2.5 h-2.5 bg-red-600 rounded-full"></div>
+                <h2 class="font-black text-xs tracking-widest uppercase">TAIWRC HYPER</h2>
             </div>
-            <div id="user-label" class="text-[10px] font-mono bg-black/20 px-3 py-1 rounded-full uppercase border border-white/10">---</div>
+            <div id="badge" class="text-[10px] font-mono bg-black/20 px-3 py-1 rounded-full uppercase border border-white/10">---</div>
         </header>
-
-        <main id="viewport"></main>
-
-        <footer class="input-tray">
-            <input id="input-node" type="text" placeholder="Type a message..." class="field" autocomplete="off">
-            <button onclick="TurboEngine.broadcast()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl">
+        <main id="view"></main>
+        <footer class="p-2 bg-[#f0f0f0] flex items-center gap-2">
+            <input id="in-node" type="text" placeholder="Message" class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm shadow-sm">
+            <button onclick="Engine.broadcast()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-xl">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </footer>
@@ -63,97 +49,97 @@
 
     <script>
         /**
-         * THE TURBO ENGINE: MULTI-THREADED EMULATION
-         * Separates the logic (Backend) from the display (Frontend) for maximum speed.
+         * HYPER-CORE ENGINE: ZERO-LATENCY PIPELINE
+         * Eliminates the "Sarthak Visibility" bug through Absolute Local Echo.
          */
-        const TurboEngine = {
-            db: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
+        const Engine = {
+            registry: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
             colors: { "DEBPRATIM": "#d32f2f", "SARTHAK": "#1976d2", "AYUSH": "#2e7d32" },
             me: "",
-            socket: null,
+            pb: null,
+            channel: "taiwrc_hyper_v14",
 
-            start() {
-                const uVal = document.getElementById('u').value.trim();
-                const kVal = document.getElementById('k').value.trim();
-                if (this.db[uVal] === kVal) {
-                    this.me = uVal.split('-')[0].toUpperCase();
-                    document.getElementById('gatekeeper').remove(); // Clear memory
-                    document.getElementById('main-ui').classList.remove('hidden');
-                    document.getElementById('user-label').innerText = this.me;
+            mount() {
+                const u = document.getElementById('u-field').value.trim();
+                const k = document.getElementById('k-field').value.trim();
+                if (this.registry[u] === k) {
+                    this.me = u.split('-')[0].toUpperCase();
+                    document.getElementById('gate').style.display = 'none';
+                    document.getElementById('ui').classList.remove('hidden');
+                    document.getElementById('badge').innerText = this.me;
                     this.initBackend();
-                } else { alert("ACCESS DENIED"); }
+                } else { alert("PROTOCOL ERROR"); }
             },
 
-            async initBackend() {
-                // Async Handshake (Non-blocking)
-                this.socket = new PubNub({
+            initBackend() {
+                this.pb = new PubNub({
                     publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
                     subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                    userId: this.me + "_" + Math.random().toString(36).slice(2, 8),
+                    userId: this.me + "_" + Date.now(),
                     ssl: true
                 });
 
-                this.socket.subscribe({ channels: ['taiwrc_turbo_v13'] });
+                this.pb.subscribe({ channels: [this.channel] });
 
-                this.socket.addListener({
-                    status: (s) => {
-                        if (s.category === "PNConnectedCategory") {
-                            document.getElementById('led').classList.replace('bg-red-600', 'bg-green-400');
-                            document.getElementById('led').classList.remove('animate-pulse');
-                            this.sync();
-                        }
-                    },
+                this.pb.addListener({
+                    status: (s) => { if(s.category === "PNConnectedCategory") {
+                        document.getElementById('led').classList.replace('bg-red-600', 'bg-green-500');
+                        this.sync();
+                    }},
                     message: (m) => {
-                        // Backend only pushes messages that aren't from the active user
-                        if (m.message.sID !== this.me) this.paint(m.message, false);
+                        // CRITICAL: Block duplicate rendering for the Sender
+                        if (m.message.sender !== this.me) this.draw(m.message, false);
                     }
                 });
             },
 
             async sync() {
-                // Background History Fetch
-                const history = await this.socket.fetchMessages({ channels: ['taiwrc_turbo_v13'], count: 40 });
-                if (history.channels['taiwrc_turbo_v13']) {
-                    history.channels['taiwrc_turbo_v13'].forEach(h => {
-                        this.paint(h.message, h.message.sID === this.me);
+                const resp = await this.pb.fetchMessages({ channels: [this.channel], count: 50 });
+                if (resp.channels[this.channel]) {
+                    resp.channels[this.channel].forEach(h => {
+                        this.draw(h.message, h.message.sender === this.me);
                     });
                 }
             },
 
             broadcast() {
-                const node = document.getElementById('input-node');
+                const node = document.getElementById('in-node');
                 const val = node.value.trim();
                 if (!val) return;
 
                 const packet = {
-                    sID: this.me,
-                    txt: val,
-                    t: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
+                    sender: this.me,
+                    text: val,
+                    time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', hour12:true })
                 };
 
-                // Instant UI Rendering (Fast Path)
-                this.paint(packet, true);
+                /** * STAGE 1: LOCAL ECHO (0.1s REACTION)
+                 * We render BEFORE sending to ensure Sarthak sees his message instantly.
+                 */
+                this.draw(packet, true);
 
-                // Background Send (Slow Path)
-                this.socket.publish({ channel: 'taiwrc_turbo_v13', message: packet });
+                /** * STAGE 2: BACKEND PIPELINE
+                 * Sending data to the cloud happens in the background.
+                 */
+                this.pb.publish({ channel: this.channel, message: packet });
                 node.value = "";
             },
 
-            paint(data, isMe) {
-                const view = document.getElementById('viewport');
-                const c = this.colors[data.sID] || "#000";
+            draw(data, isMe) {
+                const view = document.getElementById('view');
+                const c = this.colors[data.sender] || "#000";
                 const html = `
-                    <div class="msg-obj ${isMe ? 'is-me' : 'is-them'}">
-                        ${!isMe ? `<span class="sender-id" style="color:${c}">${data.sID}</span>` : ''}
-                        <div>${data.txt}</div>
-                        <div class="meta">${data.t} ${isMe ? '✓✓' : ''}</div>
+                    <div class="bubble ${isMe ? 'sent' : 'recv'}">
+                        ${!isMe ? `<span class="id-label" style="color:${c}">${data.sender}</span>` : ''}
+                        <div>${data.text}</div>
+                        <div class="time">${data.time} ${isMe ? '✓✓' : ''}</div>
                     </div>`;
                 view.insertAdjacentHTML('beforeend', html);
                 view.scrollTop = view.scrollHeight;
             }
         };
 
-        document.getElementById('input-node').addEventListener('keypress', (e) => { if (e.key === 'Enter') TurboEngine.broadcast(); });
+        document.getElementById('in-node').addEventListener('keypress', (e) => { if(e.key === 'Enter') Engine.broadcast(); });
     </script>
 </body>
 </html>
