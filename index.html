@@ -3,122 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRC Central Chat</title>
+    <title>TAIWRC Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Using a slightly older, more stable version of Gun for better compatibility -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gun/0.2020.1239/gun.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-[#e5ddd5] h-screen flex flex-col font-sans">
 
-    <!-- Login Screen -->
     <div id="login-screen" class="fixed inset-0 bg-[#f0f2f5] z-50 flex items-center justify-center p-6">
-        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">BRC Messaging</h2>
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md border-t-8 border-[#075e54]">
+            <h2 class="text-2xl font-bold text-center mb-6 text-[#075e54]">TAIWRC Chat Login</h2>
             <div class="space-y-4">
-                <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-lg focus:outline-none">
-                <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded-lg focus:outline-none">
-                <button onclick="login()" class="w-full bg-[#25d366] text-white p-3 rounded-lg font-bold">Login</button>
-                <p id="error" class="text-red-500 text-sm hidden text-center italic">Invalid credentials!</p>
+                <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500">
+                <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500">
+                <button onclick="login()" class="w-full bg-[#25d366] text-white p-3 rounded-lg font-bold hover:bg-[#128c7e]">Login</button>
+                <p id="error" class="text-red-500 text-sm hidden text-center italic font-semibold">Invalid Credentials!</p>
             </div>
         </div>
     </div>
 
-    <!-- Header -->
     <header class="bg-[#075e54] text-white p-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-black font-bold text-sm">BRC</div>
-            <h1 class="font-bold">BRC Central</h1>
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#075e54] font-bold">TAI</div>
+            <h1 class="font-bold text-lg">TAIWRC Chat</h1>
         </div>
-        <div id="user-display" class="text-xs font-mono opacity-80"></div>
+        <div id="user-display" class="text-xs font-mono bg-[#128c7e] px-2 py-1 rounded"></div>
     </header>
 
-    <!-- Message Container -->
     <main id="chat-box" class="flex-1 overflow-y-auto p-4 flex flex-col space-y-2">
-        <!-- Messages will pop up here -->
-    </main>
+        </main>
 
-    <!-- Input Area -->
     <footer class="bg-[#f0f2f5] p-3 flex items-center gap-2">
-        <input id="msg-input" type="text" placeholder="Type a message" class="flex-1 p-3 rounded-full border-none focus:outline-none">
-        <button onclick="sendMessage()" class="bg-[#075e54] text-white p-3 rounded-full">
+        <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 p-3 rounded-full border-none outline-none text-sm shadow-inner">
+        <button onclick="sendMessage()" class="bg-[#075e54] text-white p-3 rounded-full hover:bg-[#128c7e]">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
         </button>
     </footer>
 
     <script>
-        const credentials = {
-            "debubrc": "wap5brc",
-            "ayushclw": "wap7clw",
-            "sarthababawag9": "wag9clw"
+        const firebaseConfig = {
+            apiKey: "AIzaSyDGZtofvXqnuCbIA4uwX_ZNkfOmxn3-5-8",
+            authDomain: "taiwrc-chat.firebaseapp.com",
+            databaseURL: "https://taiwrc-chat-default-rtdb.firebaseio.com",
+            projectId: "taiwrc-chat",
+            storageBucket: "taiwrc-chat.firebasestorage.app",
+            messagingSenderId: "1004756731324",
+            appId: "1:1004756731324:web:926286a9ca86a5837a97b9"
         };
 
-        // NEW STABLE RELAY PEERS
-        const gun = Gun([
-            'https://gun-manhattan.herokuapp.com/gun',
-            'https://gun-us.herokuapp.com/gun'
-        ]);
-        
-        // I changed the name 'brc_central_chat_2024' to something unique
-        // This ensures a fresh connection
-        const chat = gun.get('BRC_OFFICIAL_STATION_CHAT_2026');
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const credentials = { 
+            "debubrc": "wap5brc", 
+            "ayushclw": "wap7clw", 
+            "sarthababawag9": "wag9clw" 
+        };
 
         let currentUser = "";
 
         function login() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
-
-            if (credentials[u] && credentials[u] === p) {
+            if (credentials[u] === p) {
                 currentUser = u;
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('user-display').innerText = u;
-                initChat();
+                loadMessages();
             } else {
                 document.getElementById('error').classList.remove('hidden');
             }
         }
 
-        function initChat() {
-            // Using .on() for real-time updates
-            // Using a Map to prevent duplicate messages from appearing
-            const seenMessages = new Map();
-
-            chat.map().on((data, id) => {
-                if (data && data.content && !seenMessages.has(id)) {
-                    seenMessages.set(id, true);
-                    renderMessage(data);
-                }
+        function loadMessages() {
+            db.ref("messages").on("child_added", (snapshot) => {
+                const msg = snapshot.val();
+                renderMessage(msg);
             });
         }
 
         function sendMessage() {
             const input = document.getElementById('msg-input');
-            const content = input.value.trim();
-            if (!content) return;
+            const text = input.value.trim();
+            if (!text) return;
 
-            chat.set({
+            db.ref("messages").push({
                 sender: currentUser,
-                content: content,
+                content: text,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now()
             });
-
-            input.value = '';
+            input.value = "";
         }
 
         function renderMessage(msg) {
             const box = document.getElementById('chat-box');
             const isMe = msg.sender === currentUser;
-            
             const div = document.createElement('div');
-            div.className = `max-w-[75%] p-2 rounded-lg shadow-sm relative mb-2 ${isMe ? 'bg-[#dcf8c6] self-end' : 'bg-white self-start'}`;
-            
-            div.innerHTML = `
-                <p class="text-[10px] font-bold ${isMe ? 'text-green-700' : 'text-blue-600'}">${msg.sender}</p>
-                <p class="text-[14px] text-gray-800 pr-8">${msg.content}</p>
-                <span class="text-[9px] text-gray-400 absolute bottom-1 right-2">${msg.time}</span>
-            `;
-            
+            div.className = `max-w-[85%] p-2 rounded-lg shadow-sm relative mb-1 ${isMe ? 'bg-[#dcf8c6] self-end rounded-tr-none' : 'bg-white self-start rounded-tl-none'}`;
+            div.innerHTML = `<p class="text-[10px] font-bold ${isMe ? 'text-green-700' : 'text-blue-600'}">${msg.sender}</p><p class="text-[14px] text-gray-800 pr-10">${msg.content}</p><span class="text-[9px] text-gray-400 absolute bottom-1 right-2">${msg.time}</span>`;
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
@@ -128,4 +111,4 @@
         });
     </script>
 </body>
-            </html>
+</html>
