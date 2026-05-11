@@ -87,7 +87,7 @@
 
         function initChat() {
             // Listen for new messages
-            chat.map().once((data, id) => {
+            chat.map().on((data, id) => {
                 if (data && data.content) {
                     renderMessage(data);
                 }
