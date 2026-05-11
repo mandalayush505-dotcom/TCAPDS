@@ -3,132 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>TAIWRC | v5.1 OVERRIDE</title>
+    
+    <title>TAIWRC ENTERPRISE | v6.0</title>
+    
     <style>
-        body { font-family: 'Roboto', sans-serif; background-color: #ece5dd; height: 100dvh; display: flex; flex-direction: column; margin: 0; overflow: hidden; }
-        .wa-teal { background-color: #075e54; }
-        .wa-chat-bg { flex: 1; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
-        .bubble { max-width: 85%; padding: 6px 10px; border-radius: 10px; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); font-size: 14px; min-width: 80px; }
-        .sent { align-self: flex-end; background-color: #dcf8c6; border-top-right-radius: 0; }
-        .received { align-self: flex-start; background-color: #ffffff; border-top-left-radius: 0; }
-        .name-lbl { font-size: 10px; font-weight: 700; margin-bottom: 2px; display: block; text-transform: uppercase; }
-        .time-lbl { font-size: 9px; color: #888; text-align: right; margin-top: 4px; display: block; }
+        /* CORE CSS VARIABLES */
+        :root {
+            --wa-teal-dark: #075e54;
+            --wa-teal-light: #128c7e;
+            --wa-green-check: #34b7f1;
+            --wa-bg-chat: #e5ddd5;
+            --wa-bubble-sent: #dcf8c6;
+            --wa-bubble-received: #ffffff;
+        }
+
+        /* RESET & BASE STYLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--wa-bg-chat); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* UI COMPONENTS: HEADER */
+        .app-header { background-color: var(--wa-teal-dark); color: white; height: 60px; display: flex; align-items: center; padding: 0 16px; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 100; }
+        .header-info { display: flex; align-items: center; gap: 12px; }
+        .profile-pic { width: 40px; height: 40px; background: #ccc; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        
+        /* UI COMPONENTS: CHAT BOX */
+        #message-display-area { flex: 1; overflow-y: scroll; padding: 20px 10px; display: flex; flex-direction: column; gap: 12px; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-repeat: repeat; }
+
+        /* UI COMPONENTS: MESSAGE BUBBLES */
+        .message-wrapper { display: flex; flex-direction: column; max-width: 80%; width: fit-content; position: relative; padding: 6px 10px 10px 10px; border-radius: 8px; box-shadow: 0 1px 0.5px rgba(0,0,0,0.15); }
+        .wrapper-sent { align-self: flex-end; background-color: var(--wa-bubble-sent); border-top-right-radius: 0; }
+        .wrapper-received { align-self: flex-start; background-color: var(--wa-bubble-received); border-top-left-radius: 0; }
+        
+        .sender-id { font-size: 11px; font-weight: bold; margin-bottom: 2px; }
+        .message-content { font-size: 14.5px; color: #111; word-wrap: break-word; }
+        .message-meta { font-size: 10px; color: #666; display: flex; justify-content: flex-end; align-items: center; gap: 4px; margin-top: 2px; position: absolute; bottom: 4px; right: 8px; }
+
+        /* UI COMPONENTS: INPUT BAR */
+        .app-input-bar { background-color: #f0f0f0; padding: 10px; display: flex; align-items: center; gap: 8px; border-top: 1px solid #ddd; }
+        .input-container { flex: 1; background: white; border-radius: 25px; padding: 8px 15px; display: flex; align-items: center; }
+        .input-container input { border: none; outline: none; width: 100%; font-size: 16px; background: transparent; }
+        .send-button { background-color: var(--wa-teal-light); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; border: none; cursor: pointer; transition: 0.2s; }
+        .send-button:active { transform: scale(0.9); background-color: var(--wa-teal-dark); }
+
+        /* OVERLAYS */
+        #gatekeeper-login { position: fixed; inset: 0; background: var(--wa-teal-dark); z-index: 500; display: flex; align-items: center; justify-content: center; }
+        .login-form { background: white; padding: 40px; border-radius: 20px; width: 90%; max-w: 400px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div id="auth-box" class="fixed inset-0 z-[999] wa-teal flex items-center justify-center p-6 text-center">
-        <div class="bg-white w-full max-w-xs rounded-2xl p-8 shadow-2xl">
-            <h1 class="text-xl font-bold mb-6 text-teal-800">TAIWRC LOGIN</h1>
-            <input id="u" type="text" placeholder="UNIT_ID" class="w-full p-3 border-b-2 border-teal-600 outline-none uppercase mb-4 text-center">
-            <input id="p" type="password" placeholder="KEY_CODE" class="w-full p-3 border-b-2 border-teal-600 outline-none mb-6 text-center">
-            <button onclick="connect()" class="w-full bg-teal-700 text-white py-3 rounded-lg font-bold">BOOT SYSTEM</button>
+    <section id="gatekeeper-login">
+        <div class="login-form">
+            <h1 class="text-2xl font-bold text-teal-900 mb-8 uppercase tracking-widest">TAIWRC v6.0</h1>
+            <div class="flex flex-col gap-4">
+                <input id="login-uid" type="text" placeholder="USER IDENTITY" class="p-3 border-b-2 border-teal-600 outline-none uppercase font-bold text-center">
+                <input id="login-key" type="password" placeholder="ACCESS KEY" class="p-3 border-b-2 border-teal-600 outline-none text-center">
+                <button onclick="SystemCore.authenticate()" class="mt-6 bg-teal-600 text-white py-4 rounded-xl font-bold uppercase hover:bg-teal-700 transition-all">Mount Connection</button>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div id="main-box" class="hidden h-full flex flex-col">
-        <header class="wa-teal p-3 text-white flex justify-between items-center shadow-lg">
-            <div class="flex items-center gap-3">
-                <div id="status-icon" class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+    <div id="application-root" class="hidden h-full flex flex-col">
+        <header class="app-header">
+            <div class="header-info">
+                <div class="profile-pic"><i class="fa-solid fa-server"></i></div>
                 <div>
-                    <h2 class="font-bold text-sm">TAIWRC CREW</h2>
-                    <p id="status-text" class="text-[9px] opacity-80 uppercase italic">Linking...</p>
+                    <h2 class="font-bold text-sm leading-tight">TAIWRC CENTRAL HUB</h2>
+                    <p id="connection-status-label" class="text-[10px] text-white/70 italic uppercase">Initializing Modules...</p>
                 </div>
             </div>
-            <button onclick="location.reload()" class="text-[9px] bg-white/10 px-2 py-1 rounded">REBOOT</button>
+            <div class="flex gap-5 opacity-80">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
         </header>
 
-        <main id="chat" class="wa-chat-bg"></main>
+        <main id="message-display-area"></main>
 
-        <footer class="bg-[#f0f0f0] p-2 flex gap-2 items-center">
-            <input id="input" type="text" placeholder="Type transmission..." class="flex-1 bg-white rounded-full px-4 py-2.5 outline-none text-sm">
-            <button onclick="send()" class="bg-[#128c7e] w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg">
+        <footer class="app-input-bar">
+            <div class="input-container">
+                <i class="fa-regular fa-face-smile text-gray-500 mr-3 text-xl"></i>
+                <input id="main-text-input" type="text" placeholder="Type a message" autocomplete="off">
+            </div>
+            <button onclick="SystemCore.initiateBroadcast()" class="send-button">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </footer>
     </div>
 
     <script>
-        const db = { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" };
-        const colors = { "DEBPRATIM": "text-red-600", "SARTHAK": "text-blue-600", "AYUSH": "text-green-600" };
-        let me = "";
-        let pubnub;
-
-        function connect() {
-            const user = document.getElementById('u').value.trim();
-            const pass = document.getElementById('p').value.trim();
-            if (db[user] === pass) {
-                me = user.split('-')[0].toUpperCase();
-                document.getElementById('auth-box').style.display = 'none';
-                document.getElementById('main-box').classList.remove('hidden');
-                startServer();
-            } else { alert("ACCESS DENIED"); }
-        }
-
-        function startServer() {
-            // Updated keys to a new sub-channel to bypass cache issues
-            pubnub = new PubNub({
-                publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
-                subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
-                userId: me + "_" + Math.floor(Math.random() * 9999)
-            });
-
-            pubnub.subscribe({ channels: ['taiwrc_override_v51'] });
+        /**
+         * THE TAIWRC SYSTEM CORE
+         * This object manages all logical sub-systems of the application.
+         */
+        const SystemCore = {
+            // DATABASE LOGIC
+            credentials: {
+                "Debpratim-debukakawap5": "debu-wap5brc",
+                "ayushwap7": "wap7clw",
+                "sarthababawag9": "wag9clw"
+            },
             
-            pubnub.addListener({
-                status: (st) => {
-                    if (st.category === "PNConnectedCategory") {
-                        document.getElementById('status-text').innerText = "online";
-                        document.getElementById('status-icon').classList.replace('bg-red-500', 'bg-green-400');
-                        document.getElementById('status-icon').classList.remove('animate-pulse');
-                    }
-                },
-                message: (m) => {
-                    if (m.message.sender !== me) {
-                        draw(m.message, false);
-                    }
+            userStyles: {
+                "DEBPRATIM": { color: "#e53935", icon: "fa-train" },
+                "SARTHAK": { color: "#1e88e5", icon: "fa-microchip" },
+                "AYUSH": { color: "#43a047", icon: "fa-bolt" }
+            },
+
+            // STATE VARIABLES
+            session: {
+                activeUser: null,
+                networkHandle: null,
+                isConnected: false,
+                currentChannel: "taiwrc_unoptimized_core_v6"
+            },
+
+            // AUTHENTICATION MODULE
+            authenticate: function() {
+                const uInput = document.getElementById('login-uid').value.trim();
+                const kInput = document.getElementById('login-key').value.trim();
+
+                if (this.credentials[uInput] === kInput) {
+                    this.session.activeUser = uInput.split('-')[0].toUpperCase();
+                    this.bootSequence();
+                } else {
+                    alert("SECURITY BREACH: INVALID IDENTITY PROTOCOL");
                 }
-            });
-        }
+            },
 
-        function send() {
-            const field = document.getElementById('input');
-            if(!field.value.trim()) return;
+            // APPLICATION BOOT SEQUENCE
+            bootSequence: function() {
+                document.getElementById('gatekeeper-login').style.display = 'none';
+                document.getElementById('application-root').classList.remove('hidden');
+                
+                this.initializeNetworking();
+                this.requestHardwarePermissions();
+            },
 
-            const packet = {
-                sender: me,
-                text: field.value,
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })
-            };
+            // HARDWARE INTERFACE (NOTIFICATIONS)
+            requestHardwarePermissions: function() {
+                if ("Notification" in window) {
+                    Notification.requestPermission().then(permission => {
+                        console.log("Hardware Permission Status:", permission);
+                    });
+                }
+            },
 
-            // INSTANT LOCAL ECHO (Works even if status is 'Linking')
-            draw(packet, true);
-            
-            pubnub.publish({ 
-                channel: 'taiwrc_override_v51', 
-                message: packet 
-            });
-            
-            field.value = "";
-        }
+            // NETWORK LAYER (PUBNUB INTEGRATION)
+            initializeNetworking: function() {
+                const statusLabel = document.getElementById('connection-status-label');
+                
+                this.session.networkHandle = new PubNub({
+                    publishKey: 'pub-c-4933a39e-d710-4318-9749-366a01490983',
+                    subscribeKey: 'sub-c-572f10b8-c399-4c70-96f3-138374a5893d',
+                    userId: this.session.activeUser + "_" + Date.now(),
+                    heartbeatInterval: 10,
+                    keepAlive: true,
+                    ssl: true
+                });
 
-        function draw(data, isMe) {
-            const chat = document.getElementById('chat');
-            const color = colors[data.sender] || "text-teal-700";
-            const html = `
-                <div class="bubble ${isMe ? 'sent' : 'received'}">
-                    ${!isMe ? `<span class="name-lbl ${color}">${data.sender}</span>` : ''}
-                    <p class="text-gray-800">${data.text}</p>
-                    <span class="time-lbl">${data.time} ${isMe ? '✓✓' : ''}</span>
-                </div>`;
-            chat.insertAdjacentHTML('beforeend', html);
-            chat.scrollTop = chat.scrollHeight;
-        }
+                this.session.networkHandle.subscribe({
+                    channels: [this.session.currentChannel],
+                    withPresence: true
+                });
 
-        document.getElementById('input').addEventListener('keypress', (e) => { if(e.key === 'Enter') send(); });
+                this.session.networkHandle.addListener({
+                    status: (st) => {
+                        if (st.category === "PNConnectedCategory") {
+                            this.session.isConnected = true;
+                            statusLabel.innerText = "online";
+                            statusLabel.style.color = "#4ade80";
+                        }
+                    },
+                    message: (payload) => {
+                        if (payload.message.meta.senderID !== this.session.activeUser) {
+                            this.renderMessageObject(payload.message, false);
+                            this.triggerPushEvent(payload.message);
+                        }
+                    },
+                    presence: (p) => {
+                        console.log("Presence Change:", p.action, p.uuid);
+                    }
+                });
+            },
+
+            // DATA BROADCAST ENGINE
+            initiateBroadcast: function() {
+                const inputElement = document.getElementById('main-text-input');
+                const rawContent = inputElement.value.trim();
+
+                if (!rawContent) return;
+
+                // CONSTRUCT DATA PACKET (Industrial Standard)
+                const dataPacket = {
+                    body: rawContent,
+                    meta: {
+                        senderID: this.session.activeUser,
+                        timestamp: Date.now(),
+                        formattedTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+                        uuid: this.generateUUID()
+                    }
+                };
+
+                // Local Echo
+                this.renderMessageObject(dataPacket, true);
+
+                // Publish to Central Server
+                this.session.networkHandle.publish({
+                    channel: this.session.currentChannel,
+                    message: dataPacket
+                }, (status, response) => {
+                    if (status.error) {
+                        console.error("Broadcast Failure:", status);
+                    }
+                });
+
+                inputElement.value = "";
+            },
+
+            // UI RENDERING ENGINE
+            renderMessageObject: function(packet, isSelf) {
+                const container = document.getElementById('message-display-area');
+                const userConfig = this.userStyles[packet.meta.senderID] || { color: "#777" };
+                
+                const wrapper = document.createElement('div');
+                wrapper.className = `message-wrapper ${isSelf ? 'wrapper-sent' : 'wrapper-received'}`;
+                
+                const html = `
+                    ${!isSelf ? `<span class="sender-id" style="color:${userConfig.color}">${packet.meta.senderID}</span>` : ''}
+                    <div class="message-content">${packet.body}</div>
+                    <div class="message-meta">
+                        <span>${packet.meta.formattedTime}</span>
+                        ${isSelf ? '<i class="fa-solid fa-check-double text-blue-400"></i>' : ''}
+                    </div>
+                `;
+
+                wrapper.innerHTML = html;
+                container.appendChild(wrapper);
+                
+                // Smooth Scroll to Bottom
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            },
+
+            // UTILITIES
+            generateUUID: function() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            },
+
+            triggerPushEvent: function(packet) {
+                if (Notification.permission === "granted") {
+                    new Notification(`TAIWRC: ${packet.meta.senderID}`, {
+                        body: packet.body,
+                        icon: 'https://cdn-icons-png.flaticon.com/512/733/733585.png'
+                    });
+                }
+            }
+        };
+
+        // GLOBAL EVENT LISTENERS
+        document.getElementById('main-text-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') SystemCore.initiateBroadcast();
+        });
+
     </script>
 </body>
-</html>
+            </html>
+            
