@@ -2,76 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TAIWRC TITAN | STATION HUB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAIWRC TITAN ULTRA | PC MAINFRAME</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* CSS ARCHITECTURE: THE TITAN SKIN */
         :root { 
             --wa-teal: #075e54; --wa-dark: #128c7e; --wa-bg: #efe7de; 
             --wa-msg-sent: #dcf8c6; --wa-msg-recv: #ffffff;
-            --wa-shadow: rgba(0,0,0,0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; }
-        body { background: var(--wa-bg); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: var(--wa-bg); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* THE PERSISTENT VIEWPORT */
+        /* SCROLLBAR CUSTOMIZATION FOR PC */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; }
+
         #viewport {
-            flex: 1; overflow-y: auto; padding: 25px 12px; display: flex; flex-direction: column; gap: 12px;
+            flex: 1; overflow-y: auto; padding: 30px 15%; display: flex; flex-direction: column; gap: 12px;
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
-            background-repeat: repeat; background-size: 450px; scroll-behavior: smooth;
+            background-size: 500px;
         }
 
-        /* COMPONENT: MESSAGE NODES */
+        /* PC-SPECIFIC WIDE BUBBLES */
         .node {
-            max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: 15px; 
-            position: relative; box-shadow: 0 1.5px 3px var(--wa-shadow);
-            animation: nodeRise 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
-            line-height: 1.5;
+            max-width: 65%; padding: 12px 16px; border-radius: 12px; font-size: 15px; 
+            position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease-out;
         }
-
-        @keyframes nodeRise { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
         .sent { align-self: flex-end; background: var(--wa-msg-sent); border-top-right-radius: 2px; }
         .recv { align-self: flex-start; background: var(--wa-msg-recv); border-top-left-radius: 2px; }
 
-        .tag { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: block; letter-spacing: 0.5px; }
-        .meta { font-size: 10px; color: #667781; text-align: right; margin-top: 6px; display: flex; justify-content: flex-end; align-items: center; gap: 5px; }
+        .tag { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .meta { font-size: 10px; color: #667781; text-align: right; margin-top: 6px; display: flex; justify-content: flex-end; align-items: center; gap: 6px; }
 
-        /* COMPONENT: COMMAND CENTER (HEADER) */
-        header { background: var(--wa-teal); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.25); }
-        .orb-status { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); transition: 0.3s; }
-        .online { background: #25d366; box-shadow: 0 0 12px #25d366; }
-        .offline { background: #ff3b30; box-shadow: 0 0 12px #ff3b30; animation: pulse 1.2s infinite; }
+        /* STATUS & HEADER */
+        header { background: var(--wa-teal); color: white; padding: 15px 15%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .orb { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); }
+        .online { background: #25d366; box-shadow: 0 0 10px #25d366; }
+        .offline { background: #ff3b30; box-shadow: 0 0 10px #ff3b30; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* COMPONENT: INPUT INFRASTRUCTURE */
-        footer { background: #f0f2f5; padding: 15px; display: flex; align-items: center; gap: 12px; border-top: 1px solid #d1d7db; }
-        .input-wrap { flex: 1; background: white; border-radius: 28px; padding: 12px 22px; display: flex; align-items: center; box-shadow: inset 0 1px 4px rgba(0,0,0,0.08); }
-        input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #111b21; }
-        .btn-transmit { background: var(--wa-dark); color: white; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3); transition: 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .btn-transmit:active { transform: scale(0.85); background: #075e54; }
+        /* INPUT RIG */
+        footer { background: #f0f2f5; padding: 15px 15%; display: flex; align-items: center; gap: 15px; }
+        .input-wrap { flex: 1; background: white; border-radius: 30px; padding: 12px 25px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        input { width: 100%; border: none; outline: none; font-size: 16px; }
 
-        /* COMPONENT: SECURITY SHIELD */
-        #shield { position: fixed; inset: 0; background: var(--wa-teal); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: white; padding: 45px 35px; border-radius: 45px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.5); }
+        /* AUTH SHIELD */
+        #shield { position: fixed; inset: 0; background: var(--wa-teal); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .card { background: white; padding: 50px; border-radius: 40px; width: 450px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
     <div id="shield">
-        <div class="auth-card">
-            <h1 class="text-4xl font-black text-teal-950 mb-3 italic tracking-tighter">TITAN CORE</h1>
-            <p class="text-[10px] tracking-[0.4em] text-teal-600 font-bold mb-12 uppercase">MQTT Framework v161.0</p>
-            <div class="space-y-5">
-                <input id="in-uid" type="text" placeholder="IDENTITY" class="w-full p-4 bg-gray-100 rounded-2xl outline-none text-center font-black uppercase border-2 border-transparent focus:border-teal-500 transition-all">
-                <input id="in-key" type="password" placeholder="SECURITY KEY" class="w-full p-4 bg-gray-100 rounded-2xl outline-none text-center border-2 border-transparent focus:border-teal-500 transition-all">
-                <button onclick="Titan.boot()" class="w-full bg-teal-800 text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl active:scale-95 transition-all">Establish Data Link</button>
+        <div class="card">
+            <h1 class="text-4xl font-black text-teal-950 mb-2 italic">ULTRA-HUB</h1>
+            <p class="text-[10px] tracking-[0.4em] text-teal-600 font-bold mb-10 uppercase">PC MAINFRAME v162.0</p>
+            <div class="space-y-4">
+                <input id="u-id" type="text" placeholder="IDENTITY" class="w-full p-4 bg-gray-50 rounded-2xl outline-none text-center font-bold uppercase border-2 border-transparent focus:border-teal-500 transition-all">
+                <input id="p-key" type="password" placeholder="KEY" class="w-full p-4 bg-gray-50 rounded-2xl outline-none text-center border-2 border-transparent focus:border-teal-500 transition-all">
+                <button onclick="Ultra.boot()" class="w-full bg-teal-800 text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-xl active:scale-95 transition-all">Mount Terminal</button>
             </div>
         </div>
     </div>
@@ -79,171 +76,98 @@
     <div id="ui" class="hidden h-full flex flex-col">
         <header>
             <div class="flex items-center gap-4">
-                <div id="status-orb" class="orb-status offline"></div>
+                <div id="orb" class="orb offline"></div>
                 <div>
-                    <h2 class="text-xs font-black uppercase tracking-widest">Mainframe Link</h2>
-                    <p id="status-text" class="text-[9px] opacity-70 font-bold">INITIATING HANDSHAKE...</p>
+                    <h2 class="text-xs font-black uppercase tracking-widest">Mainframe v162</h2>
+                    <p id="st-text" class="text-[9px] opacity-70 font-bold">INITIATING HANDSHAKE...</p>
                 </div>
             </div>
-            <div id="my-badge" class="text-[10px] font-mono bg-black/25 px-4 py-2 rounded-xl border border-white/10 uppercase font-black italic tracking-wider">---</div>
+            <div id="badge" class="text-[10px] font-mono bg-black/20 px-4 py-2 rounded-xl border border-white/10 uppercase font-black italic">---</div>
         </header>
-
         <main id="viewport"></main>
-
         <footer>
-            <div class="input-wrap">
-                <input id="msg-input" type="text" placeholder="Type a message..." autocomplete="off">
-            </div>
-            <button onclick="Titan.transmit()" class="btn-transmit">
-                <i class="fa-solid fa-paper-plane text-xl"></i>
-            </button>
+            <div class="input-wrap"><input id="msg-in" type="text" placeholder="Transmit..." autocomplete="off"></div>
+            <button onclick="Ultra.send()" class="bg-[#128c7e] text-white w-14 h-14 rounded-full shadow-lg active:scale-90"><i class="fa-solid fa-paper-plane text-xl"></i></button>
         </footer>
     </div>
 
     <script>
-        /**
-         * TITAN CORE ARCHITECTURE
-         * A High-Persistence MQTT Implementation
-         */
-        const Titan = {
-            // STATE MANAGEMENT
-            state: {
-                registry: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
-                colors: { "DEBPRATIM": "#b71c1c", "SARTHAK": "#0d47a1", "AYUSH": "#1b5e20" },
-                user: "",
-                mqtt: null,
-                topic: "taiwrc/v161/forever/titan_hub"
-            },
+        const Ultra = {
+            db: { "Debpratim-debukakawap5": "debu-wap5brc", "ayushwap7": "wap7clw", "sarthababawag9": "wag9clw" },
+            colors: { "DEBPRATIM": "#b71c1c", "SARTHAK": "#0d47a1", "AYUSH": "#1b5e20" },
+            me: "", client: null, topic: "taiwrc/v162/ultra/forever",
 
-            // ENGINE: BOOT SEQUENCE
             boot() {
-                const uid = document.getElementById('in-uid').value.trim();
-                const key = document.getElementById('in-key').value.trim();
-
-                if (this.state.registry[uid] === key) {
-                    this.state.user = uid.split('-')[0].toUpperCase();
+                const u = document.getElementById('u-id').value.trim();
+                const k = document.getElementById('p-key').value.trim();
+                if (this.db[u] === k) {
+                    this.me = u.split('-')[0].toUpperCase();
                     document.getElementById('shield').remove();
                     document.getElementById('ui').classList.remove('hidden');
-                    document.getElementById('my-badge').innerText = this.state.user;
-                    
-                    // LOAD LOCAL CACHE (Persistence)
-                    this.loadCache();
-                    this.initNetwork();
-                } else {
-                    alert("ACCESS VIOLATION: UNKNOWN IDENTITY");
-                }
+                    document.getElementById('badge').innerText = this.me;
+                    this.connect();
+                } else { alert("ACCESS DENIED"); }
             },
 
-            // ENGINE: NETWORK ARCHITECTURE
-            initNetwork() {
-                const clientID = "TITAN_" + this.state.user + "_" + Math.floor(Math.random() * 100000);
-                this.state.mqtt = new Paho.MQTT.Client("broker.hivemq.com", 8000, clientID);
+            connect() {
+                // PC Optimization: Randomizing ClientID prevents "Session Takeover" blocks
+                const cid = "PC_ULTRA_" + Math.random().toString(16).substr(2, 6);
+                this.client = new Paho.MQTT.Client("broker.hivemq.com", 8000, cid);
 
-                this.state.mqtt.onConnectionLost = (e) => {
-                    this.updateStatus(false, "RE-ESTABLISHING LINK...");
-                    setTimeout(() => this.initNetwork(), 3000);
+                this.client.onConnectionLost = (e) => {
+                    this.update(false, "RE-ESTABLISHING LINK...");
+                    setTimeout(() => this.connect(), 2000);
                 };
 
-                this.state.mqtt.onMessageArrived = (message) => {
-                    try {
-                        const data = JSON.parse(message.payloadString);
-                        if (data.sender !== this.state.user) {
-                            this.renderNode(data, false);
-                            this.saveToCache(data);
-                        }
-                    } catch (e) { console.error("PACKET ERROR", e); }
+                this.client.onMessageArrived = (m) => {
+                    const d = JSON.parse(m.payloadString);
+                    if (d.s !== this.me) this.draw(d, false);
                 };
 
-                this.state.mqtt.connect({
+                this.client.connect({
                     onSuccess: () => {
-                        this.updateStatus(true, "ENCRYPTED - SIGNAL SECURE");
-                        this.state.mqtt.subscribe(this.state.topic);
+                        this.update(true, "PC LINK SECURED");
+                        this.client.subscribe(this.topic);
                     },
                     useSSL: false,
-                    timeout: 8,
-                    keepAliveInterval: 45,
-                    cleanSession: false // PERSISTENT SESSION
+                    timeout: 5,
+                    keepAliveInterval: 30,
+                    cleanSession: false
                 });
             },
 
-            // UI: STATUS UPDATER
-            updateStatus(online, text) {
-                const orb = document.getElementById('status-orb');
-                const label = document.getElementById('status-text');
-                orb.className = online ? "orb-status online" : "orb-status offline";
-                label.innerText = text;
+            update(on, txt) {
+                document.getElementById('orb').className = on ? "orb online" : "orb offline";
+                document.getElementById('st-text').innerText = txt;
             },
 
-            // DATA: TRANSMISSION MODULE
-            transmit() {
-                const input = document.getElementById('msg-input');
-                const val = input.value.trim();
-                if (!val || !this.state.mqtt) return;
-
-                const packet = {
-                    sender: this.state.user,
-                    text: val,
-                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    uuid: "P-" + Date.now() + "-" + Math.floor(Math.random() * 1000)
-                };
-
-                // COMMIT TO UI & CACHE
-                this.renderNode(packet, true);
-                this.saveToCache(packet);
-
-                // BROADCAST TO CLOUD
-                const message = new Paho.MQTT.Message(JSON.stringify(packet));
-                message.destinationName = this.state.topic;
-                message.retained = true; // SAVE FOREVER ON SERVER
-                this.state.mqtt.send(message);
-
-                input.value = "";
+            send() {
+                const i = document.getElementById('msg-in');
+                const v = i.value.trim();
+                if (!v || !this.client) return;
+                const p = { s: this.me, t: v, id: "PC-" + Date.now(), time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }) };
+                this.draw(p, true);
+                const msg = new Paho.MQTT.Message(JSON.stringify(p));
+                msg.destinationName = this.topic;
+                msg.retained = true;
+                this.client.send(msg);
+                i.value = "";
             },
 
-            // UI: COMPONENT RENDERER
-            renderNode(data, isMe) {
-                if (document.getElementById(data.uuid)) return;
-
-                const flow = document.getElementById('viewport');
-                const col = this.state.colors[data.sender] || "#444";
-                
+            draw(d, isMe) {
+                if (document.getElementById(d.id)) return;
+                const view = document.getElementById('viewport');
                 const div = document.createElement('div');
-                div.id = data.uuid;
+                div.id = d.id;
                 div.className = `node ${isMe ? 'sent' : 'recv'}`;
-                
-                div.innerHTML = `
-                    ${!isMe ? `<span class="tag" style="color:${col}">${data.sender}</span>` : ''}
-                    <div class="content">${data.text}</div>
-                    <div class="meta">
-                        ${data.timestamp} 
-                        ${isMe ? '<i class="fa-solid fa-check-double text-blue-500"></i>' : ''}
-                    </div>
-                `;
-
-                flow.appendChild(div);
-                flow.scrollTop = flow.scrollHeight;
-            },
-
-            // PERSISTENCE: LOCAL STORAGE HANDLER
-            saveToCache(packet) {
-                let cache = JSON.parse(localStorage.getItem('taiwrc_cache') || '[]');
-                if (!cache.some(p => p.uuid === packet.uuid)) {
-                    cache.push(packet);
-                    if (cache.length > 200) cache.shift(); // KEEP LAST 200
-                    localStorage.setItem('taiwrc_cache', JSON.stringify(cache));
-                }
-            },
-
-            loadCache() {
-                const cache = JSON.parse(localStorage.getItem('taiwrc_cache') || '[]');
-                cache.forEach(packet => this.renderNode(packet, packet.sender === this.state.user));
+                div.innerHTML = `<span class="tag" style="color:${this.colors[d.s] || '#555'}">${!isMe ? d.s : ''}</span>
+                                 <div>${d.t}</div>
+                                 <div class="meta">${d.time} ${isMe ? '✓✓' : ''}</div>`;
+                view.appendChild(div);
+                view.scrollTop = view.scrollHeight;
             }
         };
-
-        // GLOBAL KEYBOARD LISTENER
-        document.getElementById('msg-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') Titan.transmit();
-        });
+        document.getElementById('msg-in').addEventListener('keypress', (e) => { if(e.key === 'Enter') Ultra.send(); });
     </script>
 </body>
 </html>
