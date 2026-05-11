@@ -16,7 +16,7 @@
             <div class="space-y-4">
                 <input id="username" type="text" placeholder="Username" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500">
                 <input id="password" type="password" placeholder="Password" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-green-500">
-                <button onclick="login()" class="w-full bg-[#25d366] text-white p-3 rounded-lg font-bold hover:bg-[#128c7e]">Login</button>
+                <button onclick="login()" class="w-full bg-[#25d366] text-white p-3 rounded-lg font-bold hover:bg-[#128c7e] transition">Login</button>
                 <p id="error" class="text-red-500 text-sm hidden text-center italic font-semibold">Invalid Credentials!</p>
             </div>
         </div>
@@ -24,8 +24,11 @@
 
     <header class="bg-[#075e54] text-white p-4 flex justify-between items-center shadow-lg">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#075e54] font-bold">TAI</div>
-            <h1 class="font-bold text-lg">TAIWRC Chat</h1>
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#075e54] font-bold shadow-md">TAI</div>
+            <div>
+                <h1 class="font-bold text-lg">TAIWRC Chat</h1>
+                <p class="text-[10px] text-green-300">Central Singapore Server</p>
+            </div>
         </div>
         <div id="user-display" class="text-xs font-mono bg-[#128c7e] px-2 py-1 rounded"></div>
     </header>
@@ -33,27 +36,30 @@
     <main id="chat-box" class="flex-1 overflow-y-auto p-4 flex flex-col space-y-2">
         </main>
 
-    <footer class="bg-[#f0f2f5] p-3 flex items-center gap-2">
+    <footer class="bg-[#f0f2f5] p-3 flex items-center gap-2 border-t">
         <input id="msg-input" type="text" placeholder="Type a message..." class="flex-1 p-3 rounded-full border-none outline-none text-sm shadow-inner">
-        <button onclick="sendMessage()" class="bg-[#075e54] text-white p-3 rounded-full hover:bg-[#128c7e]">
+        <button onclick="sendMessage()" class="bg-[#075e54] text-white p-3 rounded-full hover:bg-[#128c7e] shadow-md transition active:scale-95">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
         </button>
     </footer>
 
     <script>
+        // UPDATED CONFIG WITH SINGAPORE DATA URL
         const firebaseConfig = {
             apiKey: "AIzaSyDGZtofvXqnuCbIA4uwX_ZNkfOmxn3-5-8",
             authDomain: "taiwrc-chat.firebaseapp.com",
-            databaseURL: "https://taiwrc-chat-default-rtdb.firebaseio.com",
+            databaseURL: "https://taiwrc-chat-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "taiwrc-chat",
             storageBucket: "taiwrc-chat.firebasestorage.app",
             messagingSenderId: "1004756731324",
             appId: "1:1004756731324:web:926286a9ca86a5837a97b9"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // BRC Authorized Crew
         const credentials = { 
             "debubrc": "wap5brc", 
             "ayushclw": "wap7clw", 
@@ -76,6 +82,7 @@
         }
 
         function loadMessages() {
+            // "on" ensures real-time sync across all devices
             db.ref("messages").on("child_added", (snapshot) => {
                 const msg = snapshot.val();
                 renderMessage(msg);
@@ -84,12 +91,13 @@
 
         function sendMessage() {
             const input = document.getElementById('msg-input');
-            const text = input.value.trim();
-            if (!text) return;
+            const content = input.value.trim();
+            if (!content) return;
 
+            // Push to central server
             db.ref("messages").push({
                 sender: currentUser,
-                content: text,
+                content: content,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 timestamp: Date.now()
             });
@@ -100,12 +108,20 @@
             const box = document.getElementById('chat-box');
             const isMe = msg.sender === currentUser;
             const div = document.createElement('div');
+            
             div.className = `max-w-[85%] p-2 rounded-lg shadow-sm relative mb-1 ${isMe ? 'bg-[#dcf8c6] self-end rounded-tr-none' : 'bg-white self-start rounded-tl-none'}`;
-            div.innerHTML = `<p class="text-[10px] font-bold ${isMe ? 'text-green-700' : 'text-blue-600'}">${msg.sender}</p><p class="text-[14px] text-gray-800 pr-10">${msg.content}</p><span class="text-[9px] text-gray-400 absolute bottom-1 right-2">${msg.time}</span>`;
+            
+            div.innerHTML = `
+                <p class="text-[10px] font-bold ${isMe ? 'text-green-700' : 'text-blue-600'}">${msg.sender}</p>
+                <p class="text-[14px] text-gray-800 pr-10">${msg.content}</p>
+                <span class="text-[9px] text-gray-400 absolute bottom-1 right-2">${msg.time}</span>
+            `;
             box.appendChild(div);
+            // Auto-scroll to latest message
             box.scrollTop = box.scrollHeight;
         }
 
+        // Send message on Enter key
         document.getElementById('msg-input').addEventListener("keypress", (e) => {
             if (e.key === "Enter") sendMessage();
         });
